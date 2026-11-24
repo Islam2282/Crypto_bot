@@ -1,0 +1,1193 @@
+<title>Куб с крышкой на пульте</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@500;700&display=swap">
+<style>
+/* Layout: a workshop sheet — 3D stage with a parts rail beside it (stacked on phones), then wiring, cutting, assembly and code below */
+:root {
+  --bg: #eceff0;
+  --surface: #ffffff;
+  --surface-2: #e2e7e9;
+  --fg: #172127;
+  --muted: #56646d;
+  --line: #c9d2d6;
+  --accent: #1d5bd0;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(29, 91, 208, 0.12);
+  --wood: #a8763a;
+  --wood-soft: rgba(168, 118, 58, 0.14);
+  --stage: #dde3e6;
+  --grid-a: #a9b4ba;
+  --grid-b: #c4ccd0;
+  --wire-red: #cf3a2c;
+  --wire-black: #2a2f33;
+  --ok: #187a45;
+  --font-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #101519; --surface: #172026; --surface-2: #1f2a31; --fg: #e3e9ec; --muted: #94a4ae; --line: #2b3841;
+    --accent: #78a4ff; --accent-ink: #0b1424; --accent-soft: rgba(120, 164, 255, 0.16);
+    --wood: #d9a965; --wood-soft: rgba(217, 169, 101, 0.16);
+    --stage: #182128; --grid-a: #3a4852; --grid-b: #2a353d;
+    --wire-red: #ff6b5c; --wire-black: #9aa6ad; --ok: #4fc282;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #101519; --surface: #172026; --surface-2: #1f2a31; --fg: #e3e9ec; --muted: #94a4ae; --line: #2b3841;
+  --accent: #78a4ff; --accent-ink: #0b1424; --accent-soft: rgba(120, 164, 255, 0.16);
+  --wood: #d9a965; --wood-soft: rgba(217, 169, 101, 0.16);
+  --stage: #182128; --grid-a: #3a4852; --grid-b: #2a353d;
+  --wire-red: #ff6b5c; --wire-black: #9aa6ad; --ok: #4fc282;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(1.55rem, 1.1rem + 2vw, 2.4rem); font-weight: 700; line-height: 1.15; }
+h2 { font-size: 1.2rem; font-weight: 500; }
+h3 { font-size: 0.78rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* header */
+.top { padding-block: 28px 18px; }
+.top .wrap { display: grid; gap: 12px; }
+.eyebrow { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--wood); }
+.lead { max-width: 68ch; color: var(--muted); font-size: 1rem; }
+.specs { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.specs li { display: flex; flex-direction: column; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); min-width: 0; }
+.specs b { font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+.specs span { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* stage + parts rail */
+.studio { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 16px; align-items: start; }
+@media (max-width: 980px) { .studio { grid-template-columns: minmax(0, 1fr); } }
+.stage-col { display: grid; gap: 10px; min-width: 0; }
+.stage { position: relative; height: clamp(380px, 66vh, 740px); border-radius: var(--radius); overflow: hidden; background: var(--stage); border: 1px solid var(--line); touch-action: none; }
+.stage canvas { display: block; width: 100%; height: 100%; cursor: grab; }
+.stage canvas:active { cursor: grabbing; }
+#labels { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.lbl { position: absolute; left: 0; top: 0; transform: translate(-50%, -100%); pointer-events: auto; cursor: pointer; white-space: nowrap; font-size: 0.72rem; font-weight: 600; padding: 3px 8px 3px 7px; border-radius: 999px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); box-shadow: 0 1px 3px rgba(0,0,0,0.12); display: flex; align-items: center; gap: 5px; transition: opacity 0.2s; }
+.lbl::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex: none; }
+.lbl.wood::before { background: var(--wood); }
+.lbl.behind { opacity: 0.32; }
+.lbl.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.lbl.sel::before { background: var(--accent-ink); }
+.lbl.dim { background: transparent; border: none; box-shadow: none; color: var(--muted); font-family: var(--font-mono); font-weight: 400; transform: translate(-50%, -50%); cursor: default; pointer-events: none; }
+.lbl.dim::before { display: none; }
+.hud { position: absolute; left: max(12px, env(safe-area-inset-left, 0px)); top: 12px; display: flex; gap: 8px; align-items: center; padding: 6px 10px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: 0.8rem; pointer-events: none; }
+.hud .st { font-weight: 700; letter-spacing: 0.04em; }
+.hud .led { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.hud .led.on { background: #33d17a; box-shadow: 0 0 8px #33d17a; }
+.views { position: absolute; right: max(12px, env(safe-area-inset-right, 0px)); top: 12px; display: flex; gap: 4px; }
+.views button { border: 1px solid var(--line); background: var(--surface); padding: 5px 9px; border-radius: 7px; font-size: 0.75rem; cursor: pointer; }
+.views button:hover { border-color: var(--accent); }
+@media (max-width: 640px) { .views { top: auto; bottom: 12px; } }
+.loading { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font-size: 0.9rem; text-align: center; padding: 24px; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.remote { display: inline-flex; align-items: center; gap: 10px; border: none; cursor: pointer; background: var(--accent); color: var(--accent-ink); padding: 10px 16px 10px 12px; border-radius: 999px; font-weight: 600; }
+.remote:active { transform: translateY(1px); }
+.remote .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-ink); color: var(--accent); display: grid; place-items: center; font-size: 0.72rem; font-weight: 700; font-family: var(--font-mono); }
+.remote small { font-weight: 400; opacity: 0.85; }
+.tog { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; font-size: 0.85rem; user-select: none; }
+.tog input { accent-color: var(--accent); margin: 0; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); font-size: 0.8rem; }
+.seg label { position: relative; padding: 7px 10px; cursor: pointer; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg input:checked + span { color: var(--accent); font-weight: 700; }
+.seg label:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
+.hint { color: var(--muted); font-size: 0.8rem; flex: 1 1 220px; min-width: 0; }
+
+.rail { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: grid; gap: 14px; min-width: 0; }
+@media (min-width: 981px) { .rail { max-height: calc(clamp(380px, 66vh, 740px) + 60px); overflow: auto; } }
+.rail-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.rail-head p { font-size: 0.78rem; color: var(--muted); }
+.pgroup { display: grid; gap: 2px; }
+.pgroup h3 { margin: 2px 0 4px; }
+.prow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; text-align: left; border: 1px solid transparent; background: none; padding: 7px 8px; border-radius: 8px; cursor: pointer; width: 100%; }
+.prow:hover { background: var(--surface-2); }
+.prow .nm { font-weight: 600; font-size: 0.88rem; }
+.prow .qty { font-family: var(--font-mono); font-size: 0.8rem; color: var(--muted); }
+.prow .sp { grid-column: 1 / -1; font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); }
+.prow .nt { grid-column: 1 / -1; font-size: 0.82rem; display: none; padding-top: 4px; }
+.prow[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.prow[aria-pressed="true"] .nt { display: block; }
+.prow.nomodel .nm::after { content: " · вне модели"; font-weight: 400; color: var(--muted); font-size: 0.75rem; }
+
+/* sections */
+main { padding-block: 34px 60px; display: grid; gap: 40px; }
+.sec { display: grid; gap: 14px; }
+.sec > header { display: grid; gap: 4px; }
+.sec > header p { color: var(--muted); max-width: 72ch; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 860px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.86rem; }
+th, td { text-align: left; padding: 7px 10px 7px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 600; }
+td.mono { white-space: nowrap; }
+tr.grp td { padding-top: 14px; font-family: var(--font-display); font-size: 0.75rem; font-weight: 500; color: var(--wood); border-bottom: none; text-transform: uppercase; letter-spacing: 0.06em; }
+.pin { font-family: var(--font-mono); font-size: 0.8rem; background: var(--surface-2); padding: 1px 6px; border-radius: 5px; white-space: nowrap; }
+.sw { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.note { font-size: 0.85rem; color: var(--muted); }
+.warn { border-left: 3px solid var(--wood); padding: 8px 12px; background: var(--wood-soft); border-radius: 0 8px 8px 0; font-size: 0.88rem; }
+svg text { font-family: var(--font-body); }
+.svg-wrap { overflow-x: auto; }
+.svg-wrap svg { display: block; width: 100%; min-width: 440px; height: auto; }
+
+ol.steps { list-style: none; counter-reset: s; margin: 0; padding: 0; display: grid; gap: 10px; }
+ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px 14px; }
+ol.steps li::before { content: counter(s); font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--wood); line-height: 1.5; }
+ol.steps b { display: block; margin-bottom: 2px; }
+ol.steps p { color: var(--muted); font-size: 0.9rem; }
+
+.code-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.copy { border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
+.copy:hover { border-color: var(--accent); }
+pre.code { margin: 0; max-height: 560px; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; tab-size: 2; }
+footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Фанера 18 мм · линейный актуатор · Arduino Nano · 433 МГц</p>
+    <h1>Куб с крышкой на пульте</h1>
+    <p class="lead">Деревянный ящик 500 × 500 × 500 мм. Крышка висит на рояльной петле, её поднимает линейный актуатор 12 В. Одна кнопка брелока открывает, закрывает и останавливает крышку.</p>
+    <ul class="specs">
+      <li><b>500³ мм</b><span>габарит</span></li>
+      <li><b>≈ 16 кг</b><span>вес ящика</span></li>
+      <li><b>2,9 кг</b><span>вес крышки</span></li>
+      <li><b>150 мм</b><span>ход штока</span></li>
+      <li><b>0 → 90°</b><span>открытие</span></li>
+      <li><b>≈ 7,5 с</b><span>при 20 мм/с</span></li>
+      <li><b>12 В · 5 А</b><span>питание</span></li>
+    </ul>
+  </div>
+</header>
+
+<div class="wrap studio">
+  <div class="stage-col">
+    <div class="stage" id="stage">
+      <canvas id="c" aria-label="3D-модель ящика с крышкой"></canvas>
+      <div id="labels"></div>
+      <div class="hud" aria-live="polite"><span class="led" id="hudLed"></span><span class="st" id="hudState">ОТКРЫТО</span><span class="mono" id="hudNums">90° · шток 150 мм</span></div>
+      <div class="views">
+        <button type="button" data-view="front">Спереди</button>
+        <button type="button" data-view="back">Сзади</button>
+        <button type="button" data-view="top">Сверху</button>
+      </div>
+      <div class="loading" id="loading">Загружаю 3D-модель…</div>
+    </div>
+    <div class="controls">
+      <button type="button" class="remote" id="remoteBtn"><span class="dot">A</span><span>Кнопка пульта <small id="remoteNext">→ закрыть</small></span></button>
+      <label class="tog"><input type="checkbox" id="xray"> Прозрачные стенки</label>
+      <label class="tog"><input type="checkbox" id="explode"> Разобрать</label>
+      <label class="tog"><input type="checkbox" id="labelsOn" checked> Подписи</label>
+      <div class="seg" role="radiogroup" aria-label="Скорость анимации">
+        <label><input type="radio" name="spd" id="spd1" value="1" checked><span>1×</span></label>
+        <label><input type="radio" name="spd" id="spd3" value="3"><span>3×</span></label>
+      </div>
+      <p class="hint">Крутите модель мышью или пальцем, колесо или щипок — масштаб. Нажмите на деталь, чтобы увидеть её размеры. Брелок на полу тоже нажимается. Электроника внутри: включите прозрачные стенки или вид сверху.</p>
+    </div>
+  </div>
+
+  <aside class="rail" aria-label="Детали">
+    <div class="rail-head"><h2>Детали</h2><p>нажмите — подсветится</p></div>
+    <div id="partsList"></div>
+  </aside>
+</div>
+
+<main class="wrap">
+
+  <section class="sec" id="wiring">
+    <header>
+      <h2>Схема подключения</h2>
+      <p>Два реле собраны как H-мост: каждое переключает свой провод актуатора между «+12 В» и «минусом». Когда оба реле отпущены, оба провода на минусе и мотор стоит. Схема ниже показывает текущее состояние модели.</p>
+    </header>
+    <div class="two">
+      <div class="card svg-wrap">
+        <svg id="hbridge" viewBox="0 0 600 300" role="img" aria-label="Схема H-моста на двух реле">
+          <style>
+            #hbridge .rail { stroke: var(--fg); stroke-width: 2.5; }
+            #hbridge .w { stroke: var(--fg); stroke-width: 2; fill: none; }
+            #hbridge .red { stroke: var(--wire-red); stroke-width: 3; fill: none; }
+            #hbridge .blk { stroke: var(--wire-black); stroke-width: 3; fill: none; }
+            #hbridge .blade { stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transition: all 0.25s; }
+            #hbridge .t { fill: var(--fg); font-size: 14px; }
+            #hbridge .s { fill: var(--muted); font-size: 12px; }
+            #hbridge .pt { fill: var(--fg); }
+            #hbridge .box { fill: var(--surface-2); stroke: var(--line); }
+            #hbridge .motor { fill: var(--surface); stroke: var(--fg); stroke-width: 2.5; }
+          </style>
+          <line class="rail" x1="40" y1="34" x2="560" y2="34"/>
+          <text class="t" x="40" y="24" font-weight="700">+12 В</text>
+          <line class="rail" x1="40" y1="266" x2="560" y2="266"/>
+          <text class="t" x="40" y="290" font-weight="700">GND (минус)</text>
+
+          <rect class="box" x="84" y="72" width="112" height="156" rx="8"/>
+          <text class="t" x="96" y="94" font-weight="600">Реле 1</text>
+          <text class="s" x="96" y="110">IN1 ← D7</text>
+          <line class="w" x1="120" y1="34" x2="120" y2="140"/><circle class="pt" cx="120" cy="140" r="4"/>
+          <text class="s" x="96" y="137">NO</text>
+          <line class="w" x1="120" y1="266" x2="120" y2="196"/><circle class="pt" cx="120" cy="196" r="4"/>
+          <text class="s" x="96" y="212">NC</text>
+          <circle class="pt" cx="168" cy="168" r="5"/>
+          <text class="s" x="156" y="194">COM</text>
+          <line class="blade" id="blade1" x1="168" y1="168" x2="122" y2="194"/>
+
+          <rect class="box" x="404" y="72" width="112" height="156" rx="8"/>
+          <text class="t" x="446" y="94" font-weight="600">Реле 2</text>
+          <text class="s" x="446" y="110">IN2 ← D8</text>
+          <line class="w" x1="480" y1="34" x2="480" y2="140"/><circle class="pt" cx="480" cy="140" r="4"/>
+          <text class="s" x="488" y="137">NO</text>
+          <line class="w" x1="480" y1="266" x2="480" y2="196"/><circle class="pt" cx="480" cy="196" r="4"/>
+          <text class="s" x="488" y="212">NC</text>
+          <circle class="pt" cx="432" cy="168" r="5"/>
+          <text class="s" x="416" y="194">COM</text>
+          <line class="blade" id="blade2" x1="432" y1="168" x2="478" y2="194"/>
+
+          <path class="red" d="M168 168 H 262"/>
+          <path class="blk" d="M432 168 H 338"/>
+          <circle class="motor" cx="300" cy="168" r="38"/>
+          <text class="t" x="300" y="175" text-anchor="middle" font-weight="700" font-size="20">M</text>
+          <text class="s" x="300" y="226" text-anchor="middle">актуатор</text>
+          <text class="s" x="214" y="160" text-anchor="middle">красный</text>
+          <text class="s" x="386" y="160" text-anchor="middle">чёрный</text>
+          <text class="t" id="hbState" x="300" y="122" text-anchor="middle" font-weight="600">стоп: оба на минусе</text>
+        </svg>
+      </div>
+      <div class="card">
+        <table>
+          <thead><tr><th>Реле 1 (D7)</th><th>Реле 2 (D8)</th><th>Что делает мотор</th></tr></thead>
+          <tbody>
+            <tr><td>выкл</td><td>выкл</td><td>Стоит. Оба провода на минусе, мотор заторможен.</td></tr>
+            <tr><td>вкл</td><td>выкл</td><td>Шток выдвигается, крышка <b>открывается</b>.</td></tr>
+            <tr><td>выкл</td><td>вкл</td><td>Шток втягивается, крышка <b>закрывается</b>.</td></tr>
+            <tr><td>вкл</td><td>вкл</td><td>Оба на +12 В, мотор стоит. Скетч так не делает.</td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:10px">Если крышка поехала не в ту сторону, поменяйте местами красный и чёрный провод актуатора на клеммах COM.</p>
+      </div>
+    </div>
+
+    <div class="card tbl-wrap">
+      <table>
+        <thead><tr><th>Откуда</th><th>Куда</th><th>Провод</th></tr></thead>
+        <tbody>
+          <tr class="grp"><td colspan="3">Питание 12 В</td></tr>
+          <tr><td>Адаптер 12 В 5 А</td><td>Гнездо 5,5 × 2,1 на задней стенке</td><td>штекер адаптера</td></tr>
+          <tr><td>Гнездо «+»</td><td>Предохранитель 5 А → выключатель → шина +12 В</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
+          <tr><td>Шина +12 В</td><td>LM2596 <span class="pin">IN+</span>, реле 1 и реле 2 <span class="pin">NO</span></td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
+          <tr><td>Гнездо «−» (GND)</td><td>LM2596 <span class="pin">IN−</span>, реле 1 и реле 2 <span class="pin">NC</span></td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Питание 5 В (выставить 5,0 В до подключения!)</td></tr>
+          <tr><td>LM2596 <span class="pin">OUT+</span></td><td>Arduino <span class="pin">5V</span>, реле <span class="pin">VCC</span>, приёмник <span class="pin">VCC</span></td><td>0,25 мм²</td></tr>
+          <tr><td>LM2596 <span class="pin">OUT−</span></td><td>Arduino <span class="pin">GND</span>, реле <span class="pin">GND</span>, приёмник <span class="pin">GND</span></td><td>0,25 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Актуатор</td></tr>
+          <tr><td>Реле 1 <span class="pin">COM</span></td><td>Красный провод актуатора</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
+          <tr><td>Реле 2 <span class="pin">COM</span></td><td>Чёрный провод актуатора</td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Сигналы Arduino</td></tr>
+          <tr><td><span class="pin">D7</span></td><td>Реле <span class="pin">IN1</span> (открыть)</td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">D8</span></td><td>Реле <span class="pin">IN2</span> (закрыть)</td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">D2</span></td><td>Приёмник RXB6 <span class="pin">DATA</span>; <span class="pin">ANT</span> — провод 17,3 см вертикально</td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">D4</span></td><td>Кнопка на корпусе → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">D5</span></td><td>Концевик «закрыто»: <span class="pin">NO</span>; его <span class="pin">COM</span> → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">D13</span></td><td>Резистор 330 Ом → светодиод «+», «−» → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
+          <tr><td><span class="pin">A0</span> (по желанию)</td><td>OUT датчика ACS712; сам датчик в разрыв красного провода актуатора</td><td>0,2 мм²</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="warn">Крышку закрывает мотор с усилием, поэтому у переднего края она давит примерно с четвертью силы актуатора, это 50–115 Н. Пальцы под ней будет больно. Для детей или животных рядом поставьте датчик тока ACS712 и включите <span class="pin">USE_CURRENT_SENSOR 1</span>: при упоре крышка поедет обратно вверх.</p>
+  </section>
+
+  <section class="sec" id="cut">
+    <header>
+      <h2>Распил фанеры</h2>
+      <p>Всё помещается на один лист берёзовой фанеры 1525 × 1525 × 18 мм. Пропил 4 мм уже учтён в раскладке. В строительном магазине распил по такой карте обычно делают за небольшие деньги, и выходит точнее, чем лобзиком.</p>
+    </header>
+    <div class="two">
+      <div class="card tbl-wrap">
+        <table>
+          <thead><tr><th>Деталь</th><th>Размер, мм</th><th>Шт.</th></tr></thead>
+          <tbody>
+            <tr><td>Крышка</td><td class="mono">500 × 500 × 18</td><td class="mono">1</td></tr>
+            <tr><td>Дно</td><td class="mono">500 × 500 × 18</td><td class="mono">1</td></tr>
+            <tr><td>Передняя и задняя стенки</td><td class="mono">500 × 464 × 18</td><td class="mono">2</td></tr>
+            <tr><td>Боковые стенки</td><td class="mono">464 × 464 × 18</td><td class="mono">2</td></tr>
+            <tr><td>Бобышка под нижний кронштейн</td><td class="mono">60 × 60 × 40</td><td class="mono">1</td></tr>
+            <tr><td>Пластина под электронику (фанера 6 мм)</td><td class="mono">220 × 140 × 6</td><td class="mono">1</td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:10px">Стенки стоят на дне, передняя и задняя перекрывают торцы боковых. Высота: 18 (дно) + 464 (стенки) + 18 (крышка) = 500 мм.</p>
+      </div>
+      <div class="card svg-wrap">
+        <svg id="sheet" viewBox="-40 -40 1605 1605" role="img" aria-label="Раскладка деталей на листе 1525 на 1525 мм">
+          <style>
+            #sheet .sheet { fill: var(--surface-2); stroke: var(--line); stroke-width: 4; }
+            #sheet .pc { fill: var(--wood-soft); stroke: var(--wood); stroke-width: 5; }
+            #sheet .n { fill: var(--fg); font-size: 46px; font-weight: 600; }
+            #sheet .d { fill: var(--muted); font-size: 38px; font-family: var(--font-mono); }
+            #sheet .off { fill: var(--muted); font-size: 40px; }
+          </style>
+          <rect class="sheet" x="0" y="0" width="1525" height="1525"/>
+          <rect class="pc" x="0" y="0" width="500" height="500"/><text class="n" x="250" y="240" text-anchor="middle">Крышка</text><text class="d" x="250" y="295" text-anchor="middle">500×500</text>
+          <rect class="pc" x="504" y="0" width="500" height="500"/><text class="n" x="754" y="240" text-anchor="middle">Дно</text><text class="d" x="754" y="295" text-anchor="middle">500×500</text>
+          <rect class="pc" x="1008" y="0" width="500" height="464"/><text class="n" x="1258" y="222" text-anchor="middle">Перед</text><text class="d" x="1258" y="277" text-anchor="middle">500×464</text>
+          <rect class="pc" x="0" y="504" width="500" height="464"/><text class="n" x="250" y="726" text-anchor="middle">Зад</text><text class="d" x="250" y="781" text-anchor="middle">500×464</text>
+          <rect class="pc" x="504" y="504" width="464" height="464"/><text class="n" x="736" y="726" text-anchor="middle">Бок</text><text class="d" x="736" y="781" text-anchor="middle">464×464</text>
+          <rect class="pc" x="972" y="504" width="464" height="464"/><text class="n" x="1204" y="726" text-anchor="middle">Бок</text><text class="d" x="1204" y="781" text-anchor="middle">464×464</text>
+          <rect class="pc" x="0" y="972" width="60" height="60"/>
+          <text class="off" x="90" y="1016">бобышка 60×60</text>
+          <text class="off" x="762" y="1270" text-anchor="middle">остаток ≈ 1525 × 550 — на полки или второй ящик</text>
+          <text class="d" x="762" y="1500" text-anchor="middle">лист 1525 × 1525 × 18</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="assembly">
+    <header>
+      <h2>Сборка</h2>
+      <p>Порядок важен: короб и покраска до электроники, кронштейны актуатора по месту.</p>
+    </header>
+    <ol class="steps">
+      <li><div><b>Распилите и отшлифуйте</b><p>Детали по карте распила. Кромки шкуркой P120, затем P180, острые рёбра слегка скруглите.</p></div></li>
+      <li><div><b>Соберите короб</b><p>Передняя и задняя стенки накрывают торцы боковых. Клей ПВА и по 4 конфирмата 5 × 50 на каждый стык (сверло 4,5 / 7 мм). Сразу проверьте диагонали: они должны быть равны с точностью до 1–2 мм.</p></div></li>
+      <li><div><b>Поставьте дно</b><p>Короб на дно, клей и саморезы 4 × 40 снизу каждые 100–120 мм. Ножки по углам.</p></div></li>
+      <li><div><b>Отверстия в задней стенке</b><p>Гнездо 12 В (сверло 12 мм), выключатель (прямоугольник 19 × 13 мм), кнопка (12 мм), светодиод (5 мм) — всё на высоте около 90 мм от пола, слева. Потом покраска маслом или лаком.</p></div></li>
+      <li><div><b>Навесьте крышку</b><p>Рояльная петля 460 мм: одна полка на заднюю стенку снаружи, вторая на задний торец крышки, ось ровно по шву. Саморезы 3 × 12, отверстия заранее засверлите 2 мм.</p></div></li>
+      <li><div><b>Кронштейн на крышку</b><p>Снизу крышки: ось кронштейна в 114 мм от заднего края и в 48 мм от правого края, на 25 мм ниже крышки.</p></div></li>
+      <li><div><b>Нижний кронштейн по месту</b><p>Полностью втяните шток (подайте 12 В наоборот), закройте крышку и повесьте актуатор на верхний кронштейн вертикально. Где окажется нижний конец — там бобышка с кронштейном на правой стенке. По расчёту ось на 197 мм от пола и в 114 мм от задней стенки снаружи. Так крышка закрывается точно в конце хода штока.</p></div></li>
+      <li><div><b>Электроника</b><p>Пластина 220 × 140 на дно слева сзади. LM2596 сначала подключите одну к 12 В и крутите винт, пока на выходе не станет 5,0 В. Только потом Arduino, реле и приёмник по таблице.</p></div></li>
+      <li><div><b>Концевик «закрыто»</b><p>Микрик с роликом на переднюю стенку изнутри, у верхнего края. Он должен щёлкать, когда до полного закрытия остаётся 1–2 мм.</p></div></li>
+      <li><div><b>Прошивка и пульт</b><p>Залейте скетч, откройте монитор порта на 115200. Удержите кнопку на корпусе 3 секунды и нажмите кнопку брелока: светодиод мигнёт 3 раза. Засеките время полного хода и впишите его в <span class="pin">TRAVEL_TIME_MS</span>.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="code">
+    <div class="code-head">
+      <header>
+        <h2>Код Arduino</h2>
+        <p class="note">cube_lid_remote.ino · библиотека «rc-switch» (для ИК-пульта — «IRremote» и <span class="pin">REMOTE_TYPE 2</span>)</p>
+      </header>
+      <button type="button" class="copy" id="copyBtn">Скопировать код</button>
+    </div>
+    <pre class="code" id="codeBlock"><code>{{SKETCH}}</code></pre>
+  </section>
+</main>
+<footer class="wrap">Размеры в миллиметрах. Модель масштабна: сетка на полу — 100 мм.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function () {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+
+  // ---------------- parts ----------------
+  const PARTS = [
+    { g: 'Дерево', items: [
+      { id: 'lid', name: 'Крышка', spec: 'фанера 500 × 500 × 18', qty: '1', wood: true, note: 'Висит на рояльной петле. Снизу кронштейн актуатора: 114 мм от заднего края, 48 мм от правого.' },
+      { id: 'bottom', name: 'Дно', spec: '500 × 500 × 18', qty: '1', wood: true, note: 'Стенки стоят на дне, крепится снизу саморезами 4 × 40. По углам резиновые ножки.' },
+      { id: 'front', name: 'Передняя стенка', spec: '500 × 464 × 18', qty: '1', wood: true, note: 'Изнутри у верхнего края — концевик «закрыто».' },
+      { id: 'back', name: 'Задняя стенка', spec: '500 × 464 × 18', qty: '1', wood: true, note: 'Снаружи: петля, гнездо 12 В, выключатель, кнопка и светодиод.' },
+      { id: 'sides', name: 'Боковые стенки', spec: '464 × 464 × 18', qty: '2', wood: true, note: 'Зажаты между передней и задней. На правой — бобышка с нижним кронштейном.' },
+    ]},
+    { g: 'Механика', items: [
+      { id: 'hinge', name: 'Рояльная петля', spec: '460 мм, ширина 32 мм', qty: '1', note: 'Ось по шву между задней стенкой и крышкой. Саморезы 3 × 12.' },
+      { id: 'actuator', name: 'Линейный актуатор 12 В', spec: 'ход 150 мм · 200–500 Н · 260 мм ось–ось', qty: '1', note: 'Нужен со встроенными концевиками. Расчётная нагрузка до 62 Н, так что запас по силе тройной и больше. Скорость 15–30 мм/с.' },
+      { id: 'brackets', name: 'Кронштейны актуатора', spec: 'U-образные, ось Ø 6–8 мм', qty: '2', note: 'Обычно идут в комплекте с актуатором. Нижний стоит на бобышке 60 × 60 × 40 на правой стенке.' },
+      { id: 'screws', name: 'Крепёж', spec: 'конфирмат 5 × 50 · саморез 4 × 40 · ПВА', qty: '16 + 16', note: 'По 4 конфирмата на угол, саморезы в дно каждые 100–120 мм.' },
+      { id: 'feet', name: 'Ножки', spec: 'резиновые Ø 32 × 10', qty: '4', note: 'Чтобы дно не стояло на полу и не скользило.' },
+    ]},
+    { g: 'Электроника', items: [
+      { id: 'arduino', name: 'Arduino Nano', spec: 'на плате-терминале с клеммами', qty: '1', note: 'Клеммная плата избавляет от пайки: провода просто зажимаются винтами.' },
+      { id: 'relay', name: 'Модуль реле, 2 канала', spec: '5 В, контакты 10 А', qty: '1', note: 'Собран как H-мост: меняет полярность на актуаторе.' },
+      { id: 'buck', name: 'Преобразователь LM2596', spec: '12 → 5,0 В', qty: '1', note: 'Выставьте 5,0 В подстроечным винтом до подключения Arduino.' },
+      { id: 'rf', name: 'Приёмник 433 МГц RXB6', spec: 'антенна — провод 17,3 см', qty: '1', note: 'Супергетеродин RXB6 ловит брелок сквозь дерево метров на 20–30.' },
+      { id: 'remote', name: 'Брелок 433 МГц', spec: 'фиксированный код EV1527 / PT2262', qty: '1', note: 'Брелоки с плавающим кодом (KeeLoq) не подойдут. В модели он лежит на полу, его можно нажать.' },
+      { id: 'limit', name: 'Концевик «закрыто»', spec: 'микрик KW11 с роликом', qty: '1', note: 'Нажимается крышкой. Без него скетч закрывает крышку по таймеру.' },
+      { id: 'power', name: 'Гнездо, выключатель, предохранитель', spec: '5,5 × 2,1 мм · клавиша · 5 А', qty: '1', note: 'На задней стенке. Сетевых 220 В внутри ящика нет.' },
+      { id: 'panel', name: 'Кнопка и светодиод', spec: 'кнопка 12 мм · LED 5 мм + 330 Ом', qty: '1', note: 'Короткое нажатие — как пульт. Удержание 3 с — привязка брелока. Светодиод мигает, пока крышка едет.' },
+      { id: 'wires', name: 'Провода', spec: '0,75 мм² силовые · 0,2 мм² сигнальные', qty: '≈ 3 м', note: 'Силовые: гнездо, реле, актуатор. Остальное тонким.' },
+      { id: 'adapter', name: 'Блок питания 12 В 5 А', spec: 'адаптер со штекером 5,5 × 2,1', qty: '1', nomodel: true, note: 'Внешний, как у ноутбука. Пусковой ток актуатора до 3–5 А.' },
+    ]},
+  ];
+  const PART_BY_ID = {};
+  PARTS.forEach((g) => g.items.forEach((p) => { PART_BY_ID[p.id] = p; }));
+
+  let selected = null;
+  let on3dSelect = null;
+  function select(id) {
+    selected = id;
+    document.querySelectorAll('.prow').forEach((b) => b.setAttribute('aria-pressed', b.dataset.part === selected ? 'true' : 'false'));
+    if (on3dSelect) on3dSelect(id);
+    if (!selected) return;
+    const row = document.querySelector('.prow[data-part="' + selected + '"]');
+    const rail = document.querySelector('.rail');
+    if (row && rail && getComputedStyle(rail).overflowY === 'auto') {
+      const rr = rail.getBoundingClientRect(), br = row.getBoundingClientRect();
+      if (br.top < rr.top || br.bottom > rr.bottom) rail.scrollTop += br.top - rr.top - 60;
+    }
+  }
+
+  // ---------------- parts list UI ----------------
+  const listEl = $('#partsList');
+  PARTS.forEach((g) => {
+    const grp = document.createElement('div');
+    grp.className = 'pgroup';
+    grp.innerHTML = '<h3>' + g.g + '</h3>';
+    g.items.forEach((p) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'prow' + (p.nomodel ? ' nomodel' : '');
+      b.dataset.part = p.id;
+      b.setAttribute('aria-pressed', 'false');
+      b.innerHTML = '<span class="nm"></span><span class="qty"></span><span class="sp"></span><span class="nt"></span>';
+      b.querySelector('.nm').textContent = p.name;
+      b.querySelector('.qty').textContent = '× ' + p.qty;
+      b.querySelector('.sp').textContent = p.spec;
+      b.querySelector('.nt').textContent = p.note;
+      b.addEventListener('click', () => select(selected === p.id ? null : p.id));
+      grp.appendChild(b);
+    });
+    listEl.appendChild(grp);
+  });
+
+  // ---------------- copy code ----------------
+  const copyBtn = $('#copyBtn');
+  copyBtn.addEventListener('click', () => {
+    const text = $('#codeBlock').textContent;
+    const done = () => { copyBtn.textContent = 'Скопировано'; setTimeout(() => { copyBtn.textContent = 'Скопировать код'; }, 1800); };
+    const fallback = () => {
+      const r = document.createRange(); r.selectNodeContents($('#codeBlock'));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      copyBtn.textContent = 'Выделено — нажмите Ctrl+C';
+    };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+      else fallback();
+    } catch (e) { fallback(); }
+  });
+
+  // ---------------- simulation (same logic as the sketch) ----------------
+  const STROKE = 150, LMIN = 260, ROD_SPEED = 20; // mm, mm, mm/s
+  const sim = { state: 'OPEN', s: STROKE, lastMove: 'OPENING', speed: 1, theta: Math.PI / 2 };
+  const STATE_RU = { CLOSED: 'ЗАКРЫТО', OPENING: 'ОТКРЫВАЕТСЯ', OPEN: 'ОТКРЫТО', CLOSING: 'ЗАКРЫВАЕТСЯ', STOPPED: 'СТОП' };
+  function nextAction() {
+    switch (sim.state) {
+      case 'CLOSED': return '→ открыть';
+      case 'OPEN': return '→ закрыть';
+      case 'OPENING': case 'CLOSING': return '→ стоп';
+      default: return sim.lastMove === 'OPENING' ? '→ закрыть' : '→ открыть';
+    }
+  }
+  function press() {
+    switch (sim.state) {
+      case 'CLOSED': sim.state = 'OPENING'; sim.lastMove = 'OPENING'; break;
+      case 'OPEN': sim.state = 'CLOSING'; sim.lastMove = 'CLOSING'; break;
+      case 'OPENING': case 'CLOSING': sim.state = 'STOPPED'; break;
+      case 'STOPPED': sim.state = sim.lastMove === 'OPENING' ? 'CLOSING' : 'OPENING'; sim.lastMove = sim.state; break;
+    }
+    pressFx = 0.25;
+    updateUiState();
+  }
+  let pressFx = 0;
+
+  // H-bridge schematic + HUD
+  const blade1 = $('#blade1'), blade2 = $('#blade2'), hbState = $('#hbState');
+  function updateUiState() {
+    $('#hudState').textContent = STATE_RU[sim.state];
+    $('#remoteNext').textContent = nextAction();
+    const open = sim.state === 'OPENING', close = sim.state === 'CLOSING';
+    blade1.setAttribute('x2', open ? '122' : '122'); blade1.setAttribute('y2', open ? '142' : '194');
+    blade2.setAttribute('x2', '478'); blade2.setAttribute('y2', close ? '142' : '194');
+    hbState.textContent = open ? 'реле 1: красный на +12 В → открытие' : close ? 'реле 2: чёрный на +12 В → закрытие' : 'стоп: оба на минусе';
+  }
+  $('#remoteBtn').addEventListener('click', press);
+  document.querySelectorAll('input[name="spd"]').forEach((r) => r.addEventListener('change', () => { sim.speed = Number(r.value); }));
+
+  // ---------------- 3D ----------------
+  const loadingEl = $('#loading');
+  if (!window.THREE || !THREE.OrbitControls) {
+    loadingEl.textContent = 'Не удалось загрузить 3D-библиотеку. Проверьте интернет и обновите страницу.';
+    updateUiState();
+    return;
+  }
+
+  const stage = $('#stage'), canvas = $('#c');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  const maxAniso = renderer.capabilities.getMaxAnisotropy();
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(35, 1, 10, 20000);
+  const controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 300;
+  controls.maxDistance = 4200;
+  controls.maxPolarAngle = Math.PI * 0.495;
+  const VIEWS = {
+    front: { p: [-1080, 1180, 1250], t: [0, 330, 0] },
+    back: { p: [-1100, 720, -1250], t: [-40, 200, -120] },
+    top: { p: [240, 1700, 620], t: [0, 140, -40] },
+  };
+  // narrow screens: step back so the whole box fits
+  function viewPose(name) {
+    const v = VIEWS[name], a = camera.aspect || 1.4;
+    const fit = a < 1.3 ? Math.pow(1.3 / a, 0.9) : 1;
+    const t = new THREE.Vector3(...v.t);
+    return { p: new THREE.Vector3(...v.p).sub(t).multiplyScalar(fit).add(t), t };
+  }
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x7d8589, 0.8));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.0);
+  sun.position.set(700, 1500, 900);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -800, right: 800, top: 800, bottom: -800, near: 200, far: 4000 });
+  sun.shadow.bias = -0.0005;
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.4);
+  fill.position.set(-900, 500, -600);
+  scene.add(fill);
+
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.18 }));
+  ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = true;
+  scene.add(ground);
+  let grid = null;
+
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
+  function applyTheme() {
+    scene.background = new THREE.Color(cssVar('--stage'));
+    if (grid) { scene.remove(grid); grid.geometry.dispose(); }
+    grid = new THREE.GridHelper(2000, 20, new THREE.Color(cssVar('--grid-a')), new THREE.Color(cssVar('--grid-b')));
+    grid.position.y = 0.3;
+    scene.add(grid);
+    if (dimMat) dimMat.color.set(cssVar('--muted'));
+  }
+
+  // ---------- textures ----------
+  function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function grainCanvas(seed) {
+    const c = document.createElement('canvas'); c.width = c.height = 1024;
+    const g = c.getContext('2d'); const r = rng(seed);
+    g.fillStyle = '#dfc394'; g.fillRect(0, 0, 1024, 1024);
+    for (let i = 0; i < 16; i++) {
+      const y = r() * 1024, h = 20 + r() * 110;
+      g.fillStyle = 'rgba(' + (165 + r() * 35 | 0) + ',' + (115 + r() * 35 | 0) + ',' + (65 + r() * 25 | 0) + ',' + (0.04 + r() * 0.07).toFixed(3) + ')';
+      g.fillRect(0, y, 1024, h);
+    }
+    for (let i = 0; i < 280; i++) {
+      const y0 = r() * 1024, amp = 1 + r() * 7, f = 0.002 + r() * 0.008, ph = r() * 6.283;
+      g.strokeStyle = 'rgba(120,80,42,' + (0.03 + r() * 0.1).toFixed(3) + ')';
+      g.lineWidth = 0.5 + r() * 1.6;
+      g.beginPath();
+      for (let x = -16; x <= 1040; x += 16) {
+        const y = y0 + Math.sin(x * f + ph) * amp + Math.sin(x * f * 2.7 + ph * 1.3) * amp * 0.35;
+        if (x < 0) g.moveTo(x, y); else g.lineTo(x, y);
+      }
+      g.stroke();
+    }
+    for (let i = 0; i < 240; i++) {
+      g.fillStyle = 'rgba(105,68,34,' + (0.1 + r() * 0.2).toFixed(3) + ')';
+      g.fillRect(r() * 1024, r() * 1024, 3 + r() * 11, 0.8 + r() * 1.3);
+    }
+    return c;
+  }
+  function edgeCanvas() {
+    const c = document.createElement('canvas'); c.width = 16; c.height = 260;
+    const g = c.getContext('2d'); const plies = 13, h = 260 / plies;
+    for (let i = 0; i < plies; i++) {
+      g.fillStyle = (i === 0 || i === plies - 1) ? '#d8b981' : (i % 2 ? '#e9d1a4' : '#d4b27c');
+      g.fillRect(0, i * h, 16, h);
+      g.fillStyle = 'rgba(92,60,28,0.55)';
+      g.fillRect(0, i * h, 16, 1.3);
+    }
+    return c;
+  }
+  function tex(canvasEl, rot) {
+    const t = new THREE.CanvasTexture(canvasEl);
+    t.encoding = THREE.sRGBEncoding;
+    t.anisotropy = maxAniso;
+    if (rot) { t.center.set(0.5, 0.5); t.rotation = rot; }
+    return t;
+  }
+  const grains = [tex(grainCanvas(11)), tex(grainCanvas(29)), tex(grainCanvas(47)), tex(grainCanvas(83))];
+  const edgeC = edgeCanvas();
+  const edgeH = tex(edgeC), edgeV = tex(edgeC, Math.PI / 2);
+
+  // BoxGeometry faces: +x -x +y -y +z -z ; their (u,v) axes
+  const FACE_V = [1, 1, 2, 2, 1, 1], FACE_N = [0, 0, 1, 1, 2, 2];
+  function plyMats(size, grain) {
+    const k = size.indexOf(Math.min(...size));
+    return FACE_N.map((n, i) => n === k
+      ? new THREE.MeshStandardMaterial({ map: grain, roughness: 0.78, metalness: 0 })
+      : new THREE.MeshStandardMaterial({ map: FACE_V[i] === k ? edgeH : edgeV, roughness: 0.85, metalness: 0 }));
+  }
+
+  // ---------- materials ----------
+  const M = {
+    steel: new THREE.MeshStandardMaterial({ color: 0xb9c0c6, metalness: 0.85, roughness: 0.32 }),
+    darkSteel: new THREE.MeshStandardMaterial({ color: 0x51585e, metalness: 0.7, roughness: 0.45 }),
+    chrome: new THREE.MeshStandardMaterial({ color: 0xe6eaee, metalness: 1.0, roughness: 0.15 }),
+    alu: new THREE.MeshStandardMaterial({ color: 0xc8cdd2, metalness: 0.75, roughness: 0.3 }),
+    plastic: new THREE.MeshStandardMaterial({ color: 0x1c1f22, metalness: 0.05, roughness: 0.55 }),
+    rubber: new THREE.MeshStandardMaterial({ color: 0x202224, roughness: 0.95 }),
+    pcbBlue: new THREE.MeshStandardMaterial({ color: 0x1d4f9e, roughness: 0.5 }),
+    pcbGreen: new THREE.MeshStandardMaterial({ color: 0x1f6a3c, roughness: 0.5 }),
+    relayBlue: new THREE.MeshStandardMaterial({ color: 0x2f6fd6, roughness: 0.4 }),
+    termGreen: new THREE.MeshStandardMaterial({ color: 0x2e8f50, roughness: 0.6 }),
+    termBlue: new THREE.MeshStandardMaterial({ color: 0x2166c4, roughness: 0.6 }),
+    chip: new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.4 }),
+    brass: new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.9, roughness: 0.3 }),
+    red: new THREE.MeshStandardMaterial({ color: 0xc8332a, roughness: 0.5 }),
+    pine: new THREE.MeshStandardMaterial({ color: 0xd8b37a, roughness: 0.8 }),
+  };
+  const WIRE = { red: 0xd23b2e, black: 0x26292c, yellow: 0xe2b100, green: 0x2f9e54, white: 0xe8e8e8, blue: 0x2f6fd8, orange: 0xe07a1f };
+
+  // ---------- registry ----------
+  const partMeshes = {};
+  function reg(obj, id) {
+    obj.traverse((o) => {
+      if (!o.isMesh || o.userData.part) return;
+      o.userData.part = id;
+      o.castShadow = true; o.receiveShadow = true;
+      o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
+      (partMeshes[id] = partMeshes[id] || []).push(o);
+    });
+    return obj;
+  }
+  function mesh(geo, mat, x, y, z, parent) { const m = new THREE.Mesh(geo, mat); m.position.set(x || 0, y || 0, z || 0); if (parent) parent.add(m); return m; }
+  function bx(w, h, d, mat, x, y, z, parent) { return mesh(new THREE.BoxGeometry(w, h, d), mat, x, y, z, parent); }
+  function cylY(r, h, mat, x, y, z, parent, seg) { return mesh(new THREE.CylinderGeometry(r, r, h, seg || 28), mat, x, y, z, parent); }
+  function cylX(r, h, mat, x, y, z, parent, seg) { const m = cylY(r, h, mat, x, y, z, parent, seg); m.rotation.z = Math.PI / 2; return m; }
+  function cylZ(r, h, mat, x, y, z, parent, seg) { const m = cylY(r, h, mat, x, y, z, parent, seg); m.rotation.x = Math.PI / 2; return m; }
+
+  const root = new THREE.Group();
+  root.position.y = 10; // feet height
+  scene.add(root);
+
+  const explodables = [];
+  const walls = [];
+  function panel(id, size, pos, dir, dist, grain) {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(...size), plyMats(size, grain));
+    m.position.set(...pos);
+    m.userData.home = m.position.clone();
+    m.userData.dir = new THREE.Vector3(...dir).multiplyScalar(dist);
+    root.add(m);
+    reg(m, id);
+    explodables.push(m);
+    walls.push(m);
+    return m;
+  }
+
+  // ---------- box panels (root coords, mm; y up, +z = front) ----------
+  const bottom = panel('bottom', [500, 18, 500], [0, 9, 0], [0, -1, 0], 130, grains[0]);
+  const front = panel('front', [500, 464, 18], [0, 250, 241], [0, 0, 1], 170, grains[1]);
+  const back = panel('back', [500, 464, 18], [0, 250, -241], [0, 0, -1], 170, grains[2]);
+  const left = panel('sides', [18, 464, 464], [-241, 250, 0], [-1, 0, 0], 170, grains[3]);
+  const right = panel('sides', [18, 464, 464], [241, 250, 0], [1, 0, 0], 170, grains[1]);
+
+  // lid on a pivot at the hinge axis: y = 482, z = -251 (just behind the back face)
+  const HZ = -251, HY = 482;
+  const lidPivot = new THREE.Group();
+  lidPivot.position.set(0, HY, HZ);
+  lidPivot.userData.home = lidPivot.position.clone();
+  lidPivot.userData.dir = new THREE.Vector3(0, 300, 0);
+  root.add(lidPivot);
+  explodables.push(lidPivot);
+  const lid = new THREE.Mesh(new THREE.BoxGeometry(500, 18, 500), plyMats([500, 18, 500], grains[3]));
+  lid.position.set(0, 9, 251);
+  lidPivot.add(lid);
+  reg(lid, 'lid');
+  walls.push(lid);
+
+  // feet
+  [[-215, -215], [215, -215], [-215, 215], [215, 215]].forEach(([x, z]) => reg(cylY(16, 10, M.rubber, x, -14, z, bottom), 'feet'));
+
+  // confirmat screw heads on front/back faces
+  [front, back].forEach((p) => {
+    const zf = p === front ? 9.4 : -9.4;
+    [-241, 241].forEach((x) => [-190, -70, 50, 170].forEach((y) => {
+      reg(cylZ(4.6, 0.8, M.darkSteel, x, y, zf, p, 16), 'screws');
+      reg(cylZ(2.2, 1.0, M.plastic, x, y, zf * 1.01, p, 6), 'screws');
+    }));
+  });
+
+  // ---------- piano hinge ----------
+  {
+    const knuckles = new THREE.Group();
+    back.add(knuckles);
+    knuckles.position.set(0, HY - 250, HZ + 241);
+    for (let i = 0; i < 23; i++) cylX(3.3, 19.4, i % 2 ? M.steel : M.alu, -220 + i * 20, 0, 0, knuckles, 16);
+    reg(knuckles, 'hinge');
+    reg(bx(460, 22, 1.2, M.steel, 0, HY - 250 - 14.5, -9.6, back), 'hinge');
+    reg(bx(460, 16, 1.2, M.steel, 0, 9.5, 0.4, lidPivot), 'hinge');
+  }
+
+  // ---------- actuator geometry ----------
+  // Lid bracket pivot in lid-pivot coords; base pivot in root coords.
+  const LID_P = new THREE.Vector3(202, -25, 115);
+  const BASE_P = new THREE.Vector3(202, HY - 285, HZ + 115); // (202, 197, -136)
+
+  // lid bracket (U clevis under the lid)
+  {
+    const g = new THREE.Group(); lidPivot.add(g); g.position.copy(LID_P);
+    bx(44, 3, 40, M.steel, 0, 23.5, 0, g);
+    bx(3, 24, 22, M.steel, -11, 10, 0, g);
+    bx(3, 24, 22, M.steel, 11, 10, 0, g);
+    cylX(3.5, 32, M.chrome, 0, 0, 0, g, 16);
+    reg(g, 'brackets');
+  }
+  // base bracket: wooden block on the right wall + U clevis on top
+  {
+    const g = new THREE.Group(); right.add(g);
+    g.position.set(BASE_P.x - 241, BASE_P.y - 250, BASE_P.z);
+    bx(60, 40, 60, M.pine, 0, -40, 0, g); // block 60 (out of wall) × 40 × 60
+    bx(44, 3, 40, M.steel, 0, -18.5, 0, g);
+    bx(3, 24, 22, M.steel, -11, -6, 0, g);
+    bx(3, 24, 22, M.steel, 11, -6, 0, g);
+    cylX(3.5, 32, M.chrome, 0, 0, 0, g, 16);
+    reg(g, 'brackets');
+  }
+
+  // actuator: local +y runs from the rear eye (base) to the rod eye (lid)
+  const act = new THREE.Group(); root.add(act);
+  const actInner = new THREE.Group(); act.add(actInner);
+  cylX(8.5, 14, M.plastic, 0, 0, 0, actInner);
+  bx(20, 50, 64, M.plastic, 0, 25, 16, actInner);           // gearbox
+  cylY(14, 186, M.alu, 0, 142, 0, actInner);                 // outer tube Ø28
+  cylY(15.5, 8, M.plastic, 0, 232, 0, actInner);             // tube cap
+  cylY(17, 80, M.darkSteel, 0, 89, 34, actInner);            // motor Ø34
+  cylY(17.5, 6, M.plastic, 0, 131, 34, actInner);            // motor end cap
+  const rod = cylY(10, 1, M.chrome, 0, 0, 0, actInner);      // stretched each frame
+  const rodEye = cylX(8.5, 14, M.plastic, 0, 0, 0, actInner);
+  const rodNeck = cylY(9.5, 12, M.plastic, 0, 0, 0, actInner);
+  reg(act, 'actuator');
+  const motorCable = new THREE.Vector3(0, 56, 50); // cable exit at the motor's lower end, actuator-local
+
+  // ---------- electronics (children of the bottom; bottom top face is local y = 9) ----------
+  const E = new THREE.Group(); bottom.add(E); E.position.y = -9; // E uses root coordinates
+  { const plate = bx(220, 6, 140, plyMats([220, 6, 140], grains[2]), -118, 21, -150, E); plate.castShadow = plate.receiveShadow = true; }
+  const PCB_Y = 29.8;
+  function standoffs(x, z, w, d, g) {
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => cylY(2, 5, M.brass, x + sx * (w / 2 - 3), 26.5, z + sz * (d / 2 - 3), g, 8));
+  }
+  // Arduino Nano on a screw-terminal adapter
+  {
+    const g = new THREE.Group(); E.add(g);
+    bx(76, 1.6, 56, M.pcbBlue, -180, PCB_Y, -165, g);
+    standoffs(-180, -165, 76, 56, g);
+    [[-185, -165 - 23], [-185, -165 + 23]].forEach(([x, z]) => bx(66, 9, 8, M.termGreen, x + 5, PCB_Y + 5.3, z, g));
+    for (let i = 0; i < 2; i++) bx(38, 8.5, 2.6, M.plastic, -178, PCB_Y + 5, -165 + (i ? 7.6 : -7.6), g);
+    bx(43, 1.6, 18, M.pcbBlue, -178, PCB_Y + 10.2, -165, g);
+    bx(7, 1.4, 7, M.chip, -172, PCB_Y + 11.7, -165, g);
+    bx(4, 1.2, 4, M.chip, -186, PCB_Y + 11.6, -162, g);
+    bx(8, 4, 8, M.steel, -202, PCB_Y + 12.6, -165, g);   // USB
+    reg(g, 'arduino');
+  }
+  // 2-channel relay module
+  const relayLeds = [];
+  {
+    const g = new THREE.Group(); E.add(g);
+    bx(51, 1.6, 39, M.pcbBlue, -84, PCB_Y, -194, g);
+    standoffs(-84, -194, 51, 39, g);
+    [-94.5, -73.5].forEach((x, i) => {
+      bx(15.5, 15, 19, M.relayBlue, x, PCB_Y + 8.3, -192, g);
+      bx(15, 10, 8, M.termBlue, x, PCB_Y + 5.8, -209.5, g);
+      const led = bx(2.5, 1.5, 1.5, new THREE.MeshStandardMaterial({ color: 0x551111, emissive: 0x000000 }), x + 5, PCB_Y + 1.5, -178, g);
+      relayLeds.push(led);
+    });
+    bx(13, 8.5, 2.5, M.plastic, -84, PCB_Y + 5, -176.5, g);
+    reg(g, 'relay');
+  }
+  // LM2596 buck
+  {
+    const g = new THREE.Group(); E.add(g);
+    bx(43, 1.6, 21, M.pcbBlue, -84, PCB_Y, -118, g);
+    standoffs(-84, -118, 43, 21, g);
+    cylY(6.5, 7, M.chip, -92, PCB_Y + 4.3, -118, g);
+    cylY(4, 10, M.plastic, -72, PCB_Y + 5.8, -123, g);
+    cylY(4, 10, M.plastic, -103, PCB_Y + 5.8, -113, g);
+    bx(9.5, 10, 4.5, M.relayBlue, -70, PCB_Y + 5.8, -111.5, g);
+    cylZ(1.3, 1.5, M.brass, -74, PCB_Y + 9, -109.2, g, 8);
+    bx(10, 4.5, 10, M.chip, -100, PCB_Y + 3, -122, g);
+    reg(g, 'buck');
+  }
+  // RXB6 receiver
+  {
+    const g = new THREE.Group(); E.add(g);
+    bx(30, 1.6, 14, M.pcbGreen, -32, PCB_Y, -204, g);
+    standoffs(-32, -204, 30, 14, g);
+    bx(8, 3, 5, M.steel, -38, PCB_Y + 2.3, -204, g);
+    bx(5, 1.5, 5, M.chip, -26, PCB_Y + 1.6, -202, g);
+    bx(2.5, 8, 10, M.plastic, -46, PCB_Y + 4.5, -204, g);
+    reg(g, 'rf');
+  }
+
+  // ---------- limit switch on the inner front wall ----------
+  const lever = new THREE.Group();
+  {
+    const g = new THREE.Group(); front.add(g);
+    bx(20, 10, 6.4, M.plastic, -195, 223, -12.2, g);
+    bx(3, 3, 1, M.brass, -200, 216.5, -15.6, g);
+    lever.position.set(-204, 228.5, -12.2);
+    g.add(lever);
+    bx(20, 0.6, 4, M.steel, 10, 0, 0, lever);
+    cylZ(2.4, 3.2, M.plastic, 19.5, 2.2, 0, lever, 12);
+    reg(g, 'limit');
+  }
+
+  // ---------- back panel: jack, switch, button, LED (outer face = local z -9) ----------
+  let ledMat;
+  {
+    const pw = new THREE.Group(); back.add(pw);
+    cylZ(9, 2.5, M.darkSteel, -175, -160, -10.3, pw);
+    cylZ(5.6, 7, M.steel, -175, -160, -14, pw);
+    cylZ(3, 0.6, M.chip, -175, -160, -17.6, pw, 16);
+    bx(21, 15, 3, M.plastic, -132, -160, -10.5, pw);
+    const rock = bx(16, 10, 3, M.red, -132, -160, -12.8, pw); rock.rotation.x = 0.18;
+    reg(pw, 'power');
+    const pn = new THREE.Group(); back.add(pn);
+    cylZ(8.5, 2, M.steel, -88, -160, -10, pn);
+    cylZ(6, 5, M.plastic, -88, -160, -12.5, pn);
+    cylZ(5, 2, M.darkSteel, -56, -160, -10, pn);
+    ledMat = new THREE.MeshStandardMaterial({ color: 0x1d5a33, emissive: 0x000000, roughness: 0.2 });
+    const dome = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), ledMat); dome.position.set(-56, -160, -11.5); pn.add(dome);
+    reg(pn, 'panel');
+    ledMat = dome.material;
+  }
+
+  // ---------- keyfob on the floor ----------
+  const fob = new THREE.Group();
+  fob.position.set(400, 0, 430);
+  fob.rotation.y = -0.55;
+  scene.add(fob);
+  let fobBtn;
+  {
+    bx(32, 9, 58, M.plastic, 0, 4.5, 0, fob);
+    bx(26, 1, 6, M.darkSteel, 0, 9.2, 22, fob);
+    fobBtn = cylY(5, 2.4, M.steel, -7, 10, -2, fob, 20);
+    cylY(5, 2.4, M.darkSteel, 7, 10, -2, fob, 20);
+    cylY(5, 2.4, M.darkSteel, -7, 10, -16, fob, 20);
+    cylY(5, 2.4, M.darkSteel, 7, 10, -16, fob, 20);
+    const ring = new THREE.Mesh(new THREE.TorusGeometry(11, 1.4, 10, 32), M.steel);
+    ring.rotation.x = Math.PI / 2; ring.position.set(0, 2, 40); fob.add(ring);
+    reg(fob, 'remote');
+  }
+
+  // ---------- wires (root coords) ----------
+  const wireGroup = new THREE.Group(); root.add(wireGroup);
+  function wire(pts, color, r) {
+    const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), false, 'centripetal');
+    const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(24, pts.length * 14), r || 1.1, 6, false), new THREE.MeshStandardMaterial({ color, roughness: 0.6 }));
+    wireGroup.add(m);
+    reg(m, 'wires');
+    return m;
+  }
+  const PY = PCB_Y + 4;
+  wire([[-175, 90, -230], [-155, 96, -230], [-132, 90, -230]], WIRE.red, 1.6);
+  wire([[-132, 92, -230], [-128, 50, -227], [-118, 30, -150], [-104, PY, -120]], WIRE.red, 1.6);
+  wire([[-171, 86, -230], [-168, 44, -227], [-130, 28, -132], [-104, PY, -114]], WIRE.black, 1.6);
+  wire([[-104, PY, -122], [-112, 33, -160], [-96, PY + 2, -212]], WIRE.red, 1.4);
+  wire([[-64, PY, -114], [-60, 34, -150], [-73, PY + 2, -212]], WIRE.black, 1.4);
+  wire([[-62, PY, -122], [-120, 36, -140], [-160, PY + 6, -142]], WIRE.orange, 0.9);
+  wire([[-150, PY + 6, -188], [-120, 40, -176], [-100, PY + 4, -176]], WIRE.yellow, 0.8);
+  wire([[-148, PY + 6, -188], [-118, 42, -174], [-80, PY + 4, -176]], WIRE.green, 0.8);
+  wire([[-46, PY + 3, -204], [-90, 44, -150], [-150, PY + 6, -144]], WIRE.white, 0.8);
+  wire([[-18, PY, -204], [-18, 40, -226], [-18, 120, -229], [-18, 205, -229]], WIRE.blue, 0.7); // antenna 173 mm
+  wire([[-198, 468, 228], [-224, 462, 227], [-227, 260, 226], [-227, 34, 220], [-226, 30, 0], [-210, PY + 6, -138]], WIRE.yellow, 0.9);
+  wire([[-192, 468, 228], [-222, 458, 224], [-224, 250, 223], [-224, 34, 216], [-222, 30, 0], [-204, PY + 6, -138]], WIRE.black, 0.9);
+  wire([[-88, 90, -230], [-92, 50, -227], [-160, PY + 6, -192]], WIRE.green, 0.8);
+  wire([[-56, 90, -230], [-62, 50, -227], [-166, PY + 6, -193]], WIRE.white, 0.8);
+  // actuator cable is rebuilt when the actuator moves
+  const actCableMats = [new THREE.MeshStandardMaterial({ color: WIRE.red, roughness: 0.6 }), new THREE.MeshStandardMaterial({ color: WIRE.black, roughness: 0.6 })];
+  const actCables = actCableMats.map((mat) => { const m = new THREE.Mesh(new THREE.BufferGeometry(), mat); wireGroup.add(m); reg(m, 'wires'); return m; });
+  const tmpV = new THREE.Vector3();
+  function rebuildActCable() {
+    scene.updateMatrixWorld(true);
+    tmpV.copy(motorCable);
+    actInner.localToWorld(tmpV);
+    root.worldToLocal(tmpV);
+    [-2.2, 2.2].forEach((off, i) => {
+      const pts = [[-96 + off * 4, PY + 2, -214], [-30, 26, -224 + off], [150, 24, -224 + off], [218, 26, -205 + off], [226, 130, -196 + off], [226 + off, 222, -176], [tmpV.x + 16, tmpV.y - 6 + off, tmpV.z + 8], [tmpV.x, tmpV.y + off, tmpV.z]];
+      const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), false, 'centripetal');
+      const m = actCables[i];
+      m.geometry.dispose();
+      m.geometry = new THREE.TubeGeometry(curve, 110, 1.7, 6, false);
+    });
+  }
+
+  // ---------- dimension lines ----------
+  let dimMat = new THREE.LineBasicMaterial({ color: 0x888888 });
+  const dims = new THREE.Group(); scene.add(dims);
+  function dimLine(a, b, tickDir) {
+    const pts = [];
+    const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), T = new THREE.Vector3(...tickDir);
+    pts.push(A, B, A.clone().add(T), A.clone().sub(T), B.clone().add(T), B.clone().sub(T));
+    const g = new THREE.BufferGeometry().setFromPoints(pts);
+    dims.add(new THREE.LineSegments(g, dimMat));
+  }
+  dimLine([-250, 1, 300], [250, 1, 300], [0, 0, 14]);
+  dimLine([300, 1, -250], [300, 1, 250], [14, 0, 0]);
+  dimLine([300, 10, 290], [300, 510, 290], [10, 0, -10]);
+  applyTheme();
+
+  // ---------- labels ----------
+  const labelsEl = $('#labels');
+  const LABELS = [];
+  function addLabel(part, text, obj, offset, wood) {
+    const anchor = new THREE.Object3D();
+    anchor.position.set(...offset);
+    obj.add(anchor);
+    const el = document.createElement('div');
+    el.className = 'lbl' + (wood ? ' wood' : '');
+    el.textContent = text;
+    el.addEventListener('click', () => select(selected === part ? null : part));
+    labelsEl.appendChild(el);
+    LABELS.push({ part, el, anchor, behind: false });
+  }
+  function addDimLabel(text, pos) {
+    const anchor = new THREE.Object3D(); anchor.position.set(...pos); dims.add(anchor);
+    const el = document.createElement('div'); el.className = 'lbl dim'; el.textContent = text; labelsEl.appendChild(el);
+    LABELS.push({ part: null, el, anchor, dim: true });
+  }
+  addLabel('lid', 'Крышка', lid, [0, 9, 252], true);
+  addLabel('hinge', 'Рояльная петля', back, [-150, 236, -9.5]);
+  addLabel('actuator', 'Актуатор 150 мм', actInner, [0, 175, -14]);
+  addLabel('brackets', 'Кронштейн', right, [BASE_P.x - 241, BASE_P.y - 250 - 40, BASE_P.z]);
+  addLabel('arduino', 'Arduino Nano', E, [-205, 46, -150]);
+  addLabel('relay', 'Реле', E, [-84, 52, -208]);
+  addLabel('rf', 'Приёмник 433', E, [-18, 205, -229]);
+  addLabel('limit', 'Концевик', front, [-195, 232, -12]);
+  addLabel('power', 'Гнездо, кнопка, LED', back, [-120, -146, -16]);
+  addLabel('remote', 'Брелок', fob, [0, 12, 0]);
+  addDimLabel('500 мм', [0, 1, 322]);
+  addDimLabel('500 мм', [322, 1, 0]);
+  addDimLabel('500 мм', [342, 260, 312]);
+
+  // ---------- selection / highlight ----------
+  const HL = new THREE.Color(cssVar('--accent'));
+  function setEmissive(id, on) {
+    (partMeshes[id] || []).forEach((m) => {
+      (Array.isArray(m.material) ? m.material : [m.material]).forEach((mt) => {
+        if (!mt.emissive) return;
+        if (on) { mt.emissive.copy(HL); mt.emissiveIntensity = 0.45; } else { mt.emissive.setRGB(0, 0, 0); mt.emissiveIntensity = 1; }
+      });
+    });
+  }
+  let hlId = null;
+  const INSIDE = ['actuator', 'brackets', 'arduino', 'relay', 'buck', 'rf', 'limit', 'wires'];
+  on3dSelect = (id) => {
+    if (id && INSIDE.indexOf(id) >= 0 && !xray) { $('#xray').checked = true; setXray(true); }
+    if (hlId) setEmissive(hlId, false);
+    hlId = id;
+    HL.set(cssVar('--accent'));
+    if (id) setEmissive(id, true);
+    LABELS.forEach((L) => L.el.classList.toggle('sel', !!id && L.part === id));
+  };
+
+  // ---------- x-ray ----------
+  let xray = false;
+  function setXray(on) {
+    xray = on;
+    walls.forEach((w) => {
+      (Array.isArray(w.material) ? w.material : [w.material]).forEach((m) => {
+        m.transparent = on; m.opacity = on ? (w === lid ? 0.28 : 0.16) : 1; m.depthWrite = !on; m.needsUpdate = true;
+      });
+      w.castShadow = !on;
+    });
+  }
+  $('#xray').addEventListener('change', (e) => setXray(e.target.checked));
+  let explodeTarget = 0, explodeE = 0;
+  $('#explode').addEventListener('change', (e) => { explodeTarget = e.target.checked ? 1 : 0; });
+  let labelsOn = true;
+  const labelsBox = $('#labelsOn');
+  if (window.matchMedia('(max-width: 640px)').matches) { labelsBox.checked = false; }
+  labelsOn = labelsBox.checked;
+  labelsBox.addEventListener('change', (e) => { labelsOn = e.target.checked; });
+
+  // ---------- kinematics ----------
+  function lidPoint(theta, out) {
+    const c = Math.cos(theta), s = Math.sin(theta);
+    // rotation.x = -theta applied to LID_P (y, z), then offset by the hinge
+    out.set(LID_P.x, HY + LID_P.y * c + LID_P.z * s, HZ - LID_P.y * s + LID_P.z * c);
+    return out;
+  }
+  const pv = new THREE.Vector3();
+  function lengthAt(theta) { return lidPoint(theta, pv).distanceTo(BASE_P); }
+  function thetaFor(L) {
+    let lo = 0, hi = 1.75;
+    for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (lengthAt(mid) < L) lo = mid; else hi = mid; }
+    return (lo + hi) / 2;
+  }
+  const dirV = new THREE.Vector3(), lidV = new THREE.Vector3();
+  let lastCableKey = '';
+  function applyKinematics() {
+    const L = LMIN + sim.s;
+    sim.theta = thetaFor(L);
+    lidPivot.rotation.x = -sim.theta;
+    lidPoint(sim.theta, lidV);
+    dirV.subVectors(lidV, BASE_P);
+    const len = dirV.length();
+    actInner.rotation.x = Math.atan2(dirV.z, dirV.y);
+    const rodStart = 226, rodEnd = len - 12;
+    rod.scale.y = rodEnd - rodStart;
+    rod.position.y = (rodStart + rodEnd) / 2;
+    rodEye.position.y = len;
+    rodNeck.position.y = len - 10;
+    // limit-switch lever follows the lid underside, then gets pressed flat
+    const under = (HY + 480 * Math.sin(sim.theta)) - 250 - 2.4 - 228.5;
+    lever.rotation.z = Math.min(0.38, Math.asin(Math.max(-1, Math.min(1, under / 19.5))));
+    const key = sim.s.toFixed(1) + '|' + explodeE.toFixed(3);
+    if (key !== lastCableKey) { lastCableKey = key; rebuildActCable(); }
+  }
+  function applyExplode(dt) {
+    explodeE += (explodeTarget - explodeE) * Math.min(1, dt * 5);
+    if (Math.abs(explodeTarget - explodeE) < 0.001) explodeE = explodeTarget;
+    explodables.forEach((o) => o.position.copy(o.userData.home).addScaledVector(o.userData.dir, explodeE));
+    act.position.copy(BASE_P).addScaledVector(right.userData.dir, explodeE);
+    wireGroup.visible = explodeE < 0.02;
+    dims.visible = labelsOn && explodeE < 0.02;
+  }
+
+  // ---------- picking ----------
+  const ray = new THREE.Raycaster();
+  const ndc = new THREE.Vector2();
+  let downXY = null;
+  canvas.addEventListener('pointerdown', (e) => { downXY = [e.clientX, e.clientY]; });
+  canvas.addEventListener('pointerup', (e) => {
+    if (!downXY || Math.hypot(e.clientX - downXY[0], e.clientY - downXY[1]) > 6) return;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const targets = [];
+    Object.keys(partMeshes).forEach((k) => partMeshes[k].forEach((m) => { if (m.visible && (!xray || walls.indexOf(m) < 0)) targets.push(m); }));
+    const hit = ray.intersectObjects(targets, false).find((h) => h.object.parent && isVisible(h.object));
+    if (!hit) { select(null); return; }
+    const id = hit.object.userData.part;
+    if (id === 'remote') { press(); select('remote'); return; }
+    select(selected === id ? null : id);
+  });
+  function isVisible(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
+
+  // ---------- camera presets ----------
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let camAnim = null;
+  document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
+    const to = viewPose(b.dataset.view);
+    if (reduceMotion) { camera.position.copy(to.p); controls.target.copy(to.t); return; }
+    camAnim = { from: { p: camera.position.clone(), t: controls.target.clone() }, to, t0: performance.now(), dur: 850 };
+  }));
+  function stepCam(now) {
+    if (!camAnim) return;
+    let k = Math.min(1, (now - camAnim.t0) / camAnim.dur);
+    k = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    camera.position.lerpVectors(camAnim.from.p, camAnim.to.p, k);
+    controls.target.lerpVectors(camAnim.from.t, camAnim.to.t, k);
+    if (k >= 1) camAnim = null;
+  }
+
+  // ---------- labels per frame ----------
+  const wp = new THREE.Vector3(), camDir = new THREE.Vector3();
+  let frameNo = 0;
+  function updateLabels() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    const occl = (frameNo++ % 6) === 0;
+    const occluders = xray ? [] : walls;
+    LABELS.forEach((L) => {
+      const show = labelsOn && (L.dim ? explodeE < 0.02 : isVisible(L.anchor.parent));
+      if (!show) L.behind = false;
+      if (!show) { L.el.hidden = true; return; }
+      L.anchor.getWorldPosition(wp);
+      camDir.copy(wp).sub(camera.position);
+      const dist = camDir.length();
+      const p = wp.clone().project(camera);
+      if (p.z > 1 || p.x < -1.1 || p.x > 1.1 || p.y < -1.1 || p.y > 1.1) { L.el.hidden = true; return; }
+      L.el.hidden = false;
+      L.el.style.transform = 'translate(' + ((p.x + 1) / 2 * w).toFixed(1) + 'px,' + ((1 - p.y) / 2 * h).toFixed(1) + 'px) translate(-50%, ' + (L.dim ? '-50%' : '-100%') + ')';
+      if (occl && !L.dim) {
+        ray.set(camera.position, camDir.normalize());
+        ray.far = dist - 4;
+        const hits = occluders.length ? ray.intersectObjects(occluders, false) : [];
+        L.behind = hits.length > 0;
+        ray.far = Infinity;
+      }
+      if (!L.dim && L.behind && !xray) L.el.hidden = true;
+    });
+  }
+
+  // ---------- resize / theme ----------
+  function resize() {
+    const w = stage.clientWidth, h = stage.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / Math.max(1, h);
+    camera.updateProjectionMatrix();
+  }
+  new ResizeObserver(resize).observe(stage);
+  resize();
+  { const v0 = viewPose('front'); camera.position.copy(v0.p); controls.target.copy(v0.t); controls.update(); }
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  if (mq.addEventListener) mq.addEventListener('change', applyTheme);
+  new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  // ---------- loop ----------
+  function ledIsOn(t) {
+    switch (sim.state) {
+      case 'CLOSED': return false;
+      case 'OPEN': return true;
+      case 'STOPPED': return Math.floor(t / 1000) % 2 === 0;
+      default: return Math.floor(t / 200) % 2 === 0;
+    }
+  }
+  const hudLed = $('#hudLed'), hudNums = $('#hudNums');
+  let last = performance.now(), lastNums = '';
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    const v = ROD_SPEED * sim.speed * dt;
+    if (sim.state === 'OPENING') { sim.s = Math.min(STROKE, sim.s + v); if (sim.s >= STROKE) { sim.state = 'OPEN'; updateUiState(); } }
+    else if (sim.state === 'CLOSING') { sim.s = Math.max(0, sim.s - v); if (sim.s <= 0) { sim.state = 'CLOSED'; updateUiState(); } }
+    applyExplode(dt);
+    applyKinematics();
+    const on = ledIsOn(now);
+    ledMat.emissive.setHex(on ? 0x33ff88 : 0x000000);
+    ledMat.emissiveIntensity = on ? 1.6 : 1;
+    hudLed.classList.toggle('on', on);
+    relayLeds[0].material.emissive.setHex(sim.state === 'OPENING' ? 0xff2a2a : 0);
+    relayLeds[1].material.emissive.setHex(sim.state === 'CLOSING' ? 0xff2a2a : 0);
+    if (pressFx > 0) { pressFx -= dt; fobBtn.position.y = 9.2; } else fobBtn.position.y = 10;
+    const nums = Math.round(sim.theta * 180 / Math.PI) + '° · шток ' + Math.round(sim.s) + ' мм';
+    if (nums !== lastNums) { hudNums.textContent = nums; lastNums = nums; }
+    stepCam(now);
+    controls.update();
+    renderer.render(scene, camera);
+    updateLabels();
+    requestAnimationFrame(frame);
+  }
+  updateUiState();
+  loadingEl.hidden = true;
+  requestAnimationFrame(frame);
+  window.__cube = { sim, press, select, setXray };
+})();
+</script>
