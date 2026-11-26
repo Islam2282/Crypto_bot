@@ -109,6 +109,11 @@ button { font: inherit; color: inherit; }
 .remote:active { transform: translateY(1px); }
 .remote .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-ink); color: var(--accent); display: grid; place-items: center; font-size: 0.72rem; font-weight: 700; font-family: var(--font-mono); }
 .remote small { font-weight: 400; opacity: 0.85; }
+.fobpad { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.fobpad .remote { touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; padding-right: 14px; }
+.remote.ghost { background: var(--surface); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+.remote.ghost .dot { background: var(--fg); color: var(--surface); }
+.remote.held { filter: brightness(0.86); transform: translateY(1px); }
 .tog { display: inline-flex; align-items: center; gap: 6px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); cursor: pointer; font-size: 0.85rem; user-select: none; }
 .tog input { accent-color: var(--accent); margin: 0; }
 .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; background: var(--surface); font-size: 0.8rem; }
@@ -117,6 +122,7 @@ button { font: inherit; color: inherit; }
 .seg input:checked + span { color: var(--accent); font-weight: 700; }
 .seg label:focus-within { outline: 2px solid var(--accent); outline-offset: -2px; }
 .hint { color: var(--muted); font-size: 0.8rem; flex: 1 1 220px; min-width: 0; }
+.hint.mode-hint { flex: 1 1 100%; color: var(--fg); font-size: 0.85rem; margin-top: -2px; }
 
 .rail { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; display: grid; gap: 14px; min-width: 0; }
 @media (min-width: 981px) { .rail { max-height: calc(clamp(380px, 66vh, 740px) + 60px); overflow: auto; } }
@@ -161,28 +167,29 @@ ol.steps li { counter-increment: s; display: grid; grid-template-columns: 34px m
 ol.steps li::before { content: counter(s); font-family: var(--font-display); font-weight: 700; font-size: 1rem; color: var(--wood); line-height: 1.5; }
 ol.steps b { display: block; margin-bottom: 2px; }
 ol.steps p { color: var(--muted); font-size: 0.9rem; }
+.card h3 { margin-bottom: 8px; }
+ol.plain, ul.plain { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 0.9rem; }
+ol.plain li::marker { color: var(--wood); font-weight: 700; }
 
-.code-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
-.copy { border: 1px solid var(--line); background: var(--surface); padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 0.85rem; font-weight: 600; }
-.copy:hover { border-color: var(--accent); }
-pre.code { margin: 0; max-height: 560px; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.55; tab-size: 2; }
 footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.lbl.rpm { font-family: var(--font-mono); font-weight: 600; font-size: 0.7rem; }
+.lbl.rpm::before { background: var(--wood); }
 </style>
 
 <header class="top">
   <div class="wrap">
-    <p class="eyebrow">Фанера 18 мм · линейный актуатор · Arduino Nano · 433 МГц</p>
+    <p class="eyebrow">Фанера 12 и 4 мм · 2 мотора 380 · шестерни 1:100 · радиореле 433 МГц · 8 × AA</p>
     <h1>Куб с крышкой на пульте</h1>
-    <p class="lead">Деревянный ящик 500 × 500 × 500 мм. Крышка висит на рояльной петле, её поднимает линейный актуатор 12 В. Одна кнопка брелока открывает, закрывает и останавливает крышку.</p>
+    <p class="lead">Деревянный ящик 500 × 500 × 500 мм. Крышка из двух половин фанеры 4 мм открывается на две стороны. Каждую половину поднимает свой мотор 380 через шестерни 10, 50, 40, 50 и кривошип с тягой. Радиореле 433 МГц крутит моторы, пока держите кнопку брелока. Питание от восьми батареек AA.</p>
     <ul class="specs">
       <li><b>500³ мм</b><span>габарит</span></li>
-      <li><b>≈ 16 кг</b><span>вес ящика</span></li>
-      <li><b>2,9 кг</b><span>вес крышки</span></li>
-      <li><b>150 мм</b><span>ход штока</span></li>
-      <li><b>0 → 90°</b><span>открытие</span></li>
-      <li><b>≈ 7,5 с</b><span>при 20 мм/с</span></li>
-      <li><b>12 В · 5 А</b><span>питание</span></li>
+      <li><b>2 × 250 мм</b><span>крышка 4 мм</span></li>
+      <li><b>0,33 кг</b><span>половина крышки</span></li>
+      <li><b>1 : 100</b><span>редуктор</span></li>
+      <li><b>800 → 8</b><span>об/мин</span></li>
+      <li><b>≈ 3,8 с</b><span>открытие</span></li>
+      <li><b>8 × AA</b><span>12 В</span></li>
     </ul>
   </div>
 </header>
@@ -190,26 +197,31 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
 <div class="wrap studio">
   <div class="stage-col">
     <div class="stage" id="stage">
-      <canvas id="c" aria-label="3D-модель ящика с крышкой"></canvas>
+      <canvas id="c" aria-label="3D-модель ящика с крышкой из двух половин"></canvas>
       <div id="labels"></div>
-      <div class="hud" aria-live="polite"><span class="led" id="hudLed"></span><span class="st" id="hudState">ОТКРЫТО</span><span class="mono" id="hudNums">90° · шток 150 мм</span></div>
+      <div class="hud" aria-live="polite"><span class="led" id="hudLed"></span><span class="st" id="hudState">ОТКРЫТО</span><span class="mono" id="hudNums">100° · мотор стоит</span></div>
       <div class="views">
         <button type="button" data-view="front">Спереди</button>
+        <button type="button" data-view="gears">Редуктор</button>
         <button type="button" data-view="back">Сзади</button>
         <button type="button" data-view="top">Сверху</button>
       </div>
       <div class="loading" id="loading">Загружаю 3D-модель…</div>
     </div>
     <div class="controls">
-      <button type="button" class="remote" id="remoteBtn"><span class="dot">A</span><span>Кнопка пульта <small id="remoteNext">→ закрыть</small></span></button>
+      <div class="fobpad" role="group" aria-label="Кнопки брелока">
+        <button type="button" class="remote" data-ch="0"><span class="dot">A</span><span>держать: вперёд</span></button>
+        <button type="button" class="remote ghost" data-ch="1"><span class="dot">B</span><span>держать: назад</span></button>
+      </div>
       <label class="tog"><input type="checkbox" id="xray"> Прозрачные стенки</label>
       <label class="tog"><input type="checkbox" id="explode"> Разобрать</label>
       <label class="tog"><input type="checkbox" id="labelsOn" checked> Подписи</label>
       <div class="seg" role="radiogroup" aria-label="Скорость анимации">
         <label><input type="radio" name="spd" id="spd1" value="1" checked><span>1×</span></label>
-        <label><input type="radio" name="spd" id="spd3" value="3"><span>3×</span></label>
+        <label><input type="radio" name="spd" id="spd01" value="0.1"><span>медленно ×0,1</span></label>
       </div>
-      <p class="hint">Крутите модель мышью или пальцем, колесо или щипок — масштаб. Нажмите на деталь, чтобы увидеть её размеры. Брелок на полу тоже нажимается. Электроника внутри: включите прозрачные стенки или вид сверху.</p>
+      <p class="hint mode-hint" id="modeHint">Держите A: половины открываются за 3,8 с. Держите дальше: закрываются. Отпустили: стоят. B крутит то же самое в обратную сторону.</p>
+      <p class="hint">Крутите модель мышью или пальцем, колесо или щипок — масштаб. Кнопка «Редуктор» показывает шестерни вблизи, «медленно ×0,1» — как они вращаются. Кнопки брелока на полу тоже нажимаются.</p>
     </div>
   </div>
 
@@ -221,10 +233,42 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
 
 <main class="wrap">
 
+  <section class="sec" id="drive">
+    <header>
+      <h2>Как работают шестерни</h2>
+      <p>Мотор крутится слишком быстро, поэтому его замедляют в 100 раз тремя парами шестерён. Каждая пара: маленькая шестерня на 10 зубьев крутит большую. Во сколько раз большая шестерня медленнее, во столько же раз она сильнее.</p>
+    </header>
+    <div class="two">
+      <div class="card tbl-wrap">
+        <table>
+          <thead><tr><th>Пара</th><th>Ведущая → ведомая</th><th>Замедление</th><th>Обороты после пары</th></tr></thead>
+          <tbody>
+            <tr><td>Мотор</td><td>—</td><td>—</td><td class="mono">800 об/мин</td></tr>
+            <tr><td>1</td><td class="mono">10 → 50 зуб.</td><td class="mono">в 5 раз</td><td class="mono">160 об/мин</td></tr>
+            <tr><td>2</td><td class="mono">10 → 40 зуб.</td><td class="mono">в 4 раза</td><td class="mono">40 об/мин</td></tr>
+            <tr><td>3</td><td class="mono">10 → 50 зуб.</td><td class="mono">в 5 раз</td><td class="mono">8 об/мин</td></tr>
+            <tr><td colspan="2"><b>Итого</b></td><td class="mono"><b>5 × 4 × 5 = 100</b></td><td class="mono"><b>8 об/мин</b></td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:10px">Модуль у всех шестерён 1: диаметр в миллиметрах примерно равен числу зубьев. 10 зубьев — Ø 12 мм, 40 — Ø 42 мм, 50 — Ø 52 мм по зубьям. Оси пар стоят на расстоянии 30, 25 и 30 мм. На каждую половину крышки свой комплект: три шестерни по 10, две по 50 и одна на 40.</p>
+      </div>
+      <div class="card">
+        <h3>Почему концевики не нужны</h3>
+        <ul class="plain">
+          <li>Выходная ось крутится всегда в одну сторону, пока держите кнопку. На ней кривошип 30 мм, он через тягу 73 мм толкает уголок под крышкой.</li>
+          <li>За пол-оборота кривошипа половина крышки поднимается от 0 до 100°. За следующие пол-оборота она опускается обратно. Упора нет, мотор нигде не упирается.</li>
+          <li>Передержали кнопку — ничего не сломается: крышка просто поедет обратно.</li>
+          <li>В крайних положениях кривошип и тяга выстраиваются в линию. Там крышка почти стоит, поэтому её легко остановить ровно открытой или закрытой.</li>
+        </ul>
+      </div>
+    </div>
+    <p class="warn">Обороты 800 об/мин посчитаны по вашему замеру. Перед сборкой включите мотор от тех же 8 батареек и проверьте ещё раз. Если окажется около 8000 об/мин (так пишут в прайсе для 12 В), нужна четвёртая пара 10 → 100 или мотор-редуктор вместо голого мотора.</p>
+  </section>
+
   <section class="sec" id="wiring">
     <header>
       <h2>Схема подключения</h2>
-      <p>Два реле собраны как H-мост: каждое переключает свой провод актуатора между «+12 В» и «минусом». Когда оба реле отпущены, оба провода на минусе и мотор стоит. Схема ниже показывает текущее состояние модели.</p>
+      <p>Каналы A и B радиореле собраны как H-мост: каждое реле переключает свой провод моторов между «+12 В» и «минусом». Оба мотора подключены к ним параллельно. Плата стоит в режиме «без фиксации»: реле включено, только пока держите кнопку. Схема ниже показывает текущее состояние модели.</p>
     </header>
     <div class="two">
       <div class="card svg-wrap">
@@ -242,13 +286,13 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
             #hbridge .motor { fill: var(--surface); stroke: var(--fg); stroke-width: 2.5; }
           </style>
           <line class="rail" x1="40" y1="34" x2="560" y2="34"/>
-          <text class="t" x="40" y="24" font-weight="700">+12 В</text>
+          <text class="t" x="40" y="24" font-weight="700">+12 В (8 × AA)</text>
           <line class="rail" x1="40" y1="266" x2="560" y2="266"/>
           <text class="t" x="40" y="290" font-weight="700">GND (минус)</text>
 
           <rect class="box" x="84" y="72" width="112" height="156" rx="8"/>
-          <text class="t" x="96" y="94" font-weight="600">Реле 1</text>
-          <text class="s" x="96" y="110">IN1 ← D7</text>
+          <text class="t" x="130" y="94" font-weight="600">Канал A</text>
+          <text class="s" x="130" y="110">вперёд</text>
           <line class="w" x1="120" y1="34" x2="120" y2="140"/><circle class="pt" cx="120" cy="140" r="4"/>
           <text class="s" x="96" y="137">NO</text>
           <line class="w" x1="120" y1="266" x2="120" y2="196"/><circle class="pt" cx="120" cy="196" r="4"/>
@@ -258,8 +302,8 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
           <line class="blade" id="blade1" x1="168" y1="168" x2="122" y2="194"/>
 
           <rect class="box" x="404" y="72" width="112" height="156" rx="8"/>
-          <text class="t" x="446" y="94" font-weight="600">Реле 2</text>
-          <text class="s" x="446" y="110">IN2 ← D8</text>
+          <text class="t" x="412" y="94" font-weight="600">Канал B</text>
+          <text class="s" x="412" y="110">назад</text>
           <line class="w" x1="480" y1="34" x2="480" y2="140"/><circle class="pt" cx="480" cy="140" r="4"/>
           <text class="s" x="488" y="137">NO</text>
           <line class="w" x1="480" y1="266" x2="480" y2="196"/><circle class="pt" cx="480" cy="196" r="4"/>
@@ -271,24 +315,26 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
           <path class="red" d="M168 168 H 262"/>
           <path class="blk" d="M432 168 H 338"/>
           <circle class="motor" cx="300" cy="168" r="38"/>
-          <text class="t" x="300" y="175" text-anchor="middle" font-weight="700" font-size="20">M</text>
-          <text class="s" x="300" y="226" text-anchor="middle">актуатор</text>
+          <text class="t" x="300" y="175" text-anchor="middle" font-weight="700" font-size="20">M × 2</text>
+          <text class="s" x="300" y="226" text-anchor="middle">два мотора параллельно</text>
           <text class="s" x="214" y="160" text-anchor="middle">красный</text>
           <text class="s" x="386" y="160" text-anchor="middle">чёрный</text>
-          <text class="t" id="hbState" x="300" y="122" text-anchor="middle" font-weight="600">стоп: оба на минусе</text>
+          <text class="t" id="hbState" x="300" y="104" text-anchor="middle" font-weight="600">стоп</text>
+          <text class="s" id="hbSub" x="300" y="122" text-anchor="middle">оба провода на минусе</text>
         </svg>
       </div>
       <div class="card">
         <table>
-          <thead><tr><th>Реле 1 (D7)</th><th>Реле 2 (D8)</th><th>Что делает мотор</th></tr></thead>
+          <thead><tr><th style="white-space:nowrap">Канал A</th><th style="white-space:nowrap">Канал B</th><th>Что делают моторы</th></tr></thead>
           <tbody>
-            <tr><td>выкл</td><td>выкл</td><td>Стоит. Оба провода на минусе, мотор заторможен.</td></tr>
-            <tr><td>вкл</td><td>выкл</td><td>Шток выдвигается, крышка <b>открывается</b>.</td></tr>
-            <tr><td>выкл</td><td>вкл</td><td>Шток втягивается, крышка <b>закрывается</b>.</td></tr>
-            <tr><td>вкл</td><td>вкл</td><td>Оба на +12 В, мотор стоит. Скетч так не делает.</td></tr>
+            <tr><td>выкл</td><td>выкл</td><td>Стоят. Оба провода на минусе, моторы заторможены.</td></tr>
+            <tr><td>вкл</td><td>выкл</td><td>Крутят <b>вперёд</b>: из закрытого положения половины открываются, дальше закрываются.</td></tr>
+            <tr><td>выкл</td><td>вкл</td><td>Крутят <b>назад</b>: тот же путь в обратную сторону.</td></tr>
+            <tr><td>вкл</td><td>вкл</td><td>Оба провода на +12 В, моторы стоят, замыкания нет.</td></tr>
           </tbody>
         </table>
-        <p class="note" style="margin-top:10px">Если крышка поехала не в ту сторону, поменяйте местами красный и чёрный провод актуатора на клеммах COM.</p>
+        <p class="note" style="margin-top:10px">Если одна половина крутится не в ту сторону, чем другая, поменяйте местами красный и чёрный провод только у её мотора.</p>
+        <p class="note" style="margin-top:6px">У каждого реле на плате должно быть три клеммы: NO, COM, NC. Если их только две (NO и COM), полярность так не поменять, такая плата не подойдёт.</p>
       </div>
     </div>
 
@@ -296,71 +342,99 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
       <table>
         <thead><tr><th>Откуда</th><th>Куда</th><th>Провод</th></tr></thead>
         <tbody>
-          <tr class="grp"><td colspan="3">Питание 12 В</td></tr>
-          <tr><td>Адаптер 12 В 5 А</td><td>Гнездо 5,5 × 2,1 на задней стенке</td><td>штекер адаптера</td></tr>
-          <tr><td>Гнездо «+»</td><td>Предохранитель 5 А → выключатель → шина +12 В</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
-          <tr><td>Шина +12 В</td><td>LM2596 <span class="pin">IN+</span>, реле 1 и реле 2 <span class="pin">NO</span></td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
-          <tr><td>Гнездо «−» (GND)</td><td>LM2596 <span class="pin">IN−</span>, реле 1 и реле 2 <span class="pin">NC</span></td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
-          <tr class="grp"><td colspan="3">Питание 5 В (выставить 5,0 В до подключения!)</td></tr>
-          <tr><td>LM2596 <span class="pin">OUT+</span></td><td>Arduino <span class="pin">5V</span>, реле <span class="pin">VCC</span>, приёмник <span class="pin">VCC</span></td><td>0,25 мм²</td></tr>
-          <tr><td>LM2596 <span class="pin">OUT−</span></td><td>Arduino <span class="pin">GND</span>, реле <span class="pin">GND</span>, приёмник <span class="pin">GND</span></td><td>0,25 мм²</td></tr>
-          <tr class="grp"><td colspan="3">Актуатор</td></tr>
-          <tr><td>Реле 1 <span class="pin">COM</span></td><td>Красный провод актуатора</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
-          <tr><td>Реле 2 <span class="pin">COM</span></td><td>Чёрный провод актуатора</td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
-          <tr class="grp"><td colspan="3">Сигналы Arduino</td></tr>
-          <tr><td><span class="pin">D7</span></td><td>Реле <span class="pin">IN1</span> (открыть)</td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">D8</span></td><td>Реле <span class="pin">IN2</span> (закрыть)</td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">D2</span></td><td>Приёмник RXB6 <span class="pin">DATA</span>; <span class="pin">ANT</span> — провод 17,3 см вертикально</td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">D4</span></td><td>Кнопка на корпусе → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">D5</span></td><td>Концевик «закрыто»: <span class="pin">NO</span>; его <span class="pin">COM</span> → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">D13</span></td><td>Резистор 330 Ом → светодиод «+», «−» → <span class="pin">GND</span></td><td>0,2 мм²</td></tr>
-          <tr><td><span class="pin">A0</span> (по желанию)</td><td>OUT датчика ACS712; сам датчик в разрыв красного провода актуатора</td><td>0,2 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Батарейки</td></tr>
+          <tr><td>Бокс 1 «−»</td><td>Бокс 2 «+» (боксы последовательно: 4 + 4 батарейки = 12 В)</td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
+          <tr><td>Бокс 1 «+»</td><td>Предохранитель 5 А → выключатель → плата: клемма <span class="pin">+12V</span>. С неё перемычки на <span class="pin">NO</span> каналов A и B</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
+          <tr><td>Бокс 2 «−»</td><td>Плата: клемма <span class="pin">GND</span>. С неё перемычки на <span class="pin">NC</span> каналов A и B</td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Моторы</td></tr>
+          <tr><td>Канал A <span class="pin">COM</span></td><td>Первый вывод левого мотора и первый вывод правого</td><td><span class="sw" style="background:var(--wire-red)"></span>0,75 мм²</td></tr>
+          <tr><td>Канал B <span class="pin">COM</span></td><td>Второй вывод левого мотора и второй вывод правого</td><td><span class="sw" style="background:var(--wire-black)"></span>0,75 мм²</td></tr>
+          <tr class="grp"><td colspan="3">Свободные каналы</td></tr>
+          <tr><td>Каналы C и D</td><td>Ничего не подключать</td><td>—</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="warn">Крышку закрывает мотор с усилием, поэтому у переднего края она давит примерно с четвертью силы актуатора, это 50–115 Н. Пальцы под ней будет больно. Для детей или животных рядом поставьте датчик тока ACS712 и включите <span class="pin">USE_CURRENT_SENSOR 1</span>: при упоре крышка поедет обратно вверх.</p>
+    <p class="warn">Не держите пальцы между крышкой и стенками. В крайних положениях кривошип и тяга стоят в линию, и там у механизма очень большая сила. Отпустите кнопку — крышка сразу встанет.</p>
+    <p class="warn">Плата и в ожидании тратит батарейки, около 5–10 мА. Если не выключать, 8 батареек AA хватит примерно на 1–2 недели. Выключайте ящик выключателем, когда он не нужен.</p>
+  </section>
+
+  <section class="sec" id="modes">
+    <header>
+      <h2>Брелок и настройка</h2>
+      <p>Arduino нет: логику задаёт режим радиореле. Нужен режим «без фиксации», он один на все четыре канала.</p>
+    </header>
+    <div class="card tbl-wrap">
+      <table>
+        <thead><tr><th>Кнопка</th><th>Что происходит</th></tr></thead>
+        <tbody>
+          <tr><td><b>A</b> (держать)</td><td>Моторы крутят вперёд. Из закрытого положения половины открываются за ≈ 3,8 с. Отпустите, когда открылись. Держите A снова — закроются.</td></tr>
+          <tr><td><b>B</b> (держать)</td><td>То же самое в обратную сторону. Удобно, если чуть передержали A.</td></tr>
+          <tr><td>Отпустили</td><td>Моторы сразу стоят, половины остаются там, где были.</td></tr>
+          <tr><td><b>C</b>, <b>D</b></td><td>Не подключены, ничего не делают.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="two">
+      <div class="card">
+        <h3>Как настроить</h3>
+        <ol class="plain">
+          <li>Брелоки обычно продаются уже привязанными. Нажмите A: на плате загорится светодиод канала A.</li>
+          <li>Поставьте режим «без фиксации». Его выбирают кнопкой обучения на плате (часто подписана <span class="pin">LEARN</span>) или перемычками. На многих платах это одно нажатие кнопки обучения, затем сразу кнопка брелока. Точный порядок смотрите в инструкции к своей плате.</li>
+          <li>Держите A. Обе половины должны подниматься. Если одна опускается или стоит, поменяйте провода её мотора.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Чтобы половины ехали вместе</h3>
+        <ul class="plain">
+          <li>Перед тем как надеть тяги, поставьте оба кривошипа в положение «закрыто»: кривошип смотрит вниз, в сторону от уголка крышки.</li>
+          <li>Два одинаковых мотора крутятся почти одинаково, но не точно. Если одна половина начала отставать, отпустите кнопку, когда она дойдёт до конца. В крайних положениях крышка почти стоит, поэтому вторая половина за это время сильно не уедет.</li>
+          <li>Если отстаёт сильно, ослабьте винт её кривошипа, поставьте половину ровно и затяните снова.</li>
+        </ul>
+      </div>
+    </div>
   </section>
 
   <section class="sec" id="cut">
     <header>
       <h2>Распил фанеры</h2>
-      <p>Всё помещается на один лист берёзовой фанеры 1525 × 1525 × 18 мм. Пропил 4 мм уже учтён в раскладке. В строительном магазине распил по такой карте обычно делают за небольшие деньги, и выходит точнее, чем лобзиком.</p>
+      <p>Короб из одного листа берёзовой фанеры 1525 × 1525 × 12 мм, крышка из куска фанеры 4 мм. Пропил 4 мм уже учтён в раскладке.</p>
     </header>
     <div class="two">
       <div class="card tbl-wrap">
         <table>
           <thead><tr><th>Деталь</th><th>Размер, мм</th><th>Шт.</th></tr></thead>
           <tbody>
-            <tr><td>Крышка</td><td class="mono">500 × 500 × 18</td><td class="mono">1</td></tr>
-            <tr><td>Дно</td><td class="mono">500 × 500 × 18</td><td class="mono">1</td></tr>
-            <tr><td>Передняя и задняя стенки</td><td class="mono">500 × 464 × 18</td><td class="mono">2</td></tr>
-            <tr><td>Боковые стенки</td><td class="mono">464 × 464 × 18</td><td class="mono">2</td></tr>
-            <tr><td>Бобышка под нижний кронштейн</td><td class="mono">60 × 60 × 40</td><td class="mono">1</td></tr>
-            <tr><td>Пластина под электронику (фанера 6 мм)</td><td class="mono">220 × 140 × 6</td><td class="mono">1</td></tr>
+            <tr><td>Половины крышки (фанера 4 мм)</td><td class="mono">500 × 250 × 4</td><td class="mono">2</td></tr>
+            <tr><td>Дно</td><td class="mono">500 × 500 × 12</td><td class="mono">1</td></tr>
+            <tr><td>Передняя и задняя стенки</td><td class="mono">500 × 484 × 12</td><td class="mono">2</td></tr>
+            <tr><td>Боковые стенки</td><td class="mono">476 × 484 × 12</td><td class="mono">2</td></tr>
+            <tr><td>Пластина под радиореле (фанера 6 мм)</td><td class="mono">160 × 110 × 6</td><td class="mono">1</td></tr>
           </tbody>
         </table>
-        <p class="note" style="margin-top:10px">Стенки стоят на дне, передняя и задняя перекрывают торцы боковых. Высота: 18 (дно) + 464 (стенки) + 18 (крышка) = 500 мм.</p>
+        <p class="note" style="margin-top:10px">Стенки стоят на дне, передняя и задняя перекрывают торцы боковых. Высота: 12 (дно) + 484 (стенки) + 4 (крышка) = 500 мм.</p>
       </div>
       <div class="card svg-wrap">
-        <svg id="sheet" viewBox="-40 -40 1605 1605" role="img" aria-label="Раскладка деталей на листе 1525 на 1525 мм">
+        <svg id="sheet" viewBox="-40 -40 1605 1605" role="img" aria-label="Раскладка деталей на листе 1525 на 1525 мм и куске фанеры 4 мм">
           <style>
             #sheet .sheet { fill: var(--surface-2); stroke: var(--line); stroke-width: 4; }
             #sheet .pc { fill: var(--wood-soft); stroke: var(--wood); stroke-width: 5; }
+            #sheet .thin { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 5; }
             #sheet .n { fill: var(--fg); font-size: 46px; font-weight: 600; }
             #sheet .d { fill: var(--muted); font-size: 38px; font-family: var(--font-mono); }
             #sheet .off { fill: var(--muted); font-size: 40px; }
           </style>
           <rect class="sheet" x="0" y="0" width="1525" height="1525"/>
-          <rect class="pc" x="0" y="0" width="500" height="500"/><text class="n" x="250" y="240" text-anchor="middle">Крышка</text><text class="d" x="250" y="295" text-anchor="middle">500×500</text>
-          <rect class="pc" x="504" y="0" width="500" height="500"/><text class="n" x="754" y="240" text-anchor="middle">Дно</text><text class="d" x="754" y="295" text-anchor="middle">500×500</text>
-          <rect class="pc" x="1008" y="0" width="500" height="464"/><text class="n" x="1258" y="222" text-anchor="middle">Перед</text><text class="d" x="1258" y="277" text-anchor="middle">500×464</text>
-          <rect class="pc" x="0" y="504" width="500" height="464"/><text class="n" x="250" y="726" text-anchor="middle">Зад</text><text class="d" x="250" y="781" text-anchor="middle">500×464</text>
-          <rect class="pc" x="504" y="504" width="464" height="464"/><text class="n" x="736" y="726" text-anchor="middle">Бок</text><text class="d" x="736" y="781" text-anchor="middle">464×464</text>
-          <rect class="pc" x="972" y="504" width="464" height="464"/><text class="n" x="1204" y="726" text-anchor="middle">Бок</text><text class="d" x="1204" y="781" text-anchor="middle">464×464</text>
-          <rect class="pc" x="0" y="972" width="60" height="60"/>
-          <text class="off" x="90" y="1016">бобышка 60×60</text>
-          <text class="off" x="762" y="1270" text-anchor="middle">остаток ≈ 1525 × 550 — на полки или второй ящик</text>
-          <text class="d" x="762" y="1500" text-anchor="middle">лист 1525 × 1525 × 18</text>
+          <rect class="pc" x="0" y="0" width="500" height="500"/><text class="n" x="250" y="240" text-anchor="middle">Дно</text><text class="d" x="250" y="295" text-anchor="middle">500×500</text>
+          <rect class="pc" x="504" y="0" width="500" height="484"/><text class="n" x="754" y="232" text-anchor="middle">Перед</text><text class="d" x="754" y="287" text-anchor="middle">500×484</text>
+          <rect class="pc" x="1008" y="0" width="500" height="484"/><text class="n" x="1258" y="232" text-anchor="middle">Зад</text><text class="d" x="1258" y="287" text-anchor="middle">500×484</text>
+          <rect class="pc" x="0" y="504" width="476" height="484"/><text class="n" x="238" y="736" text-anchor="middle">Бок</text><text class="d" x="238" y="791" text-anchor="middle">476×484</text>
+          <rect class="pc" x="480" y="504" width="476" height="484"/><text class="n" x="718" y="736" text-anchor="middle">Бок</text><text class="d" x="718" y="791" text-anchor="middle">476×484</text>
+          <text class="off" x="40" y="1120">остаток 12 мм ≈ 1525 × 530</text>
+          <text class="off" x="40" y="1175">и 560 × 480 — на полки</text>
+          <text class="off" x="1004" y="1000">фанера 4 мм</text>
+          <rect class="thin" x="1004" y="1020" width="250" height="500"/><text class="n" x="1129" y="1265" text-anchor="middle">½</text><text class="d" x="1129" y="1315" text-anchor="middle">250×500</text>
+          <rect class="thin" x="1258" y="1020" width="250" height="500"/><text class="n" x="1383" y="1265" text-anchor="middle">½</text><text class="d" x="1383" y="1315" text-anchor="middle">250×500</text>
+          <text class="d" x="40" y="1500">лист 1525 × 1525 × 12</text>
         </svg>
       </div>
     </div>
@@ -369,488 +443,21 @@ footer { color: var(--muted); font-size: 0.8rem; padding-block: 0 40px; }
   <section class="sec" id="assembly">
     <header>
       <h2>Сборка</h2>
-      <p>Порядок важен: короб и покраска до электроники, кронштейны актуатора по месту.</p>
+      <p>Порядок важен: сначала короб и петли, потом редукторы по месту, тяги в последнюю очередь.</p>
     </header>
     <ol class="steps">
       <li><div><b>Распилите и отшлифуйте</b><p>Детали по карте распила. Кромки шкуркой P120, затем P180, острые рёбра слегка скруглите.</p></div></li>
-      <li><div><b>Соберите короб</b><p>Передняя и задняя стенки накрывают торцы боковых. Клей ПВА и по 4 конфирмата 5 × 50 на каждый стык (сверло 4,5 / 7 мм). Сразу проверьте диагонали: они должны быть равны с точностью до 1–2 мм.</p></div></li>
-      <li><div><b>Поставьте дно</b><p>Короб на дно, клей и саморезы 4 × 40 снизу каждые 100–120 мм. Ножки по углам.</p></div></li>
-      <li><div><b>Отверстия в задней стенке</b><p>Гнездо 12 В (сверло 12 мм), выключатель (прямоугольник 19 × 13 мм), кнопка (12 мм), светодиод (5 мм) — всё на высоте около 90 мм от пола, слева. Потом покраска маслом или лаком.</p></div></li>
-      <li><div><b>Навесьте крышку</b><p>Рояльная петля 460 мм: одна полка на заднюю стенку снаружи, вторая на задний торец крышки, ось ровно по шву. Саморезы 3 × 12, отверстия заранее засверлите 2 мм.</p></div></li>
-      <li><div><b>Кронштейн на крышку</b><p>Снизу крышки: ось кронштейна в 114 мм от заднего края и в 48 мм от правого края, на 25 мм ниже крышки.</p></div></li>
-      <li><div><b>Нижний кронштейн по месту</b><p>Полностью втяните шток (подайте 12 В наоборот), закройте крышку и повесьте актуатор на верхний кронштейн вертикально. Где окажется нижний конец — там бобышка с кронштейном на правой стенке. По расчёту ось на 197 мм от пола и в 114 мм от задней стенки снаружи. Так крышка закрывается точно в конце хода штока.</p></div></li>
-      <li><div><b>Электроника</b><p>Пластина 220 × 140 на дно слева сзади. LM2596 сначала подключите одну к 12 В и крутите винт, пока на выходе не станет 5,0 В. Только потом Arduino, реле и приёмник по таблице.</p></div></li>
-      <li><div><b>Концевик «закрыто»</b><p>Микрик с роликом на переднюю стенку изнутри, у верхнего края. Он должен щёлкать, когда до полного закрытия остаётся 1–2 мм.</p></div></li>
-      <li><div><b>Прошивка и пульт</b><p>Залейте скетч, откройте монитор порта на 115200. Удержите кнопку на корпусе 3 секунды и нажмите кнопку брелока: светодиод мигнёт 3 раза. Засеките время полного хода и впишите его в <span class="pin">TRAVEL_TIME_MS</span>.</p></div></li>
+      <li><div><b>Соберите короб</b><p>Передняя и задняя стенки накрывают торцы боковых. Клей ПВА и по 4 самореза 3,5 × 30 на каждый стык: в лицевой детали сверло 3,5 мм с зенковкой, в торец 2,5 мм. Проверьте диагонали: они должны быть равны с точностью до 1–2 мм.</p></div></li>
+      <li><div><b>Поставьте дно</b><p>Короб на дно, клей и саморезы 3,5 × 30 снизу каждые 100–120 мм, со сверловкой 2,5 мм. Ножки по углам. На задней стенке снаружи слева вырежьте окно 19 × 13 мм под выключатель, примерно в 90 мм от пола. Потом покраска маслом или лаком.</p></div></li>
+      <li><div><b>Навесьте половины крышки</b><p>Каждая половина на своей рояльной петле 500 мм по наружному верхнему ребру боковой стенки. Одна полка петли на стенку снаружи (саморезы 3 × 10), вторая сверху на крышку: винты M3 с гайками насквозь, в фанере 4 мм саморез не держится. Половины открываются наружу, в разные стороны.</p></div></li>
+      <li><div><b>Соберите два редуктора</b><p>Две пластины на стойках, между ними три пары шестерён: мотор 10 → 50, 10 → 40, 10 → 50 на выходной оси. Мотор прикручен к передней пластине снаружи, его вал проходит сквозь неё. Второй редуктор зеркальный.</p></div></li>
+      <li><div><b>Поставьте выходную ось</b><p>Ось Ø 8 мм длиной 400 мм вдоль боковой стенки: в 36 мм от стенки внутрь и в 52 мм ниже её верхнего края. Спереди она проходит через редуктор, сзади через опору на стенке. Редуктор прикрутите уголком к боковой стенке у передней.</p></div></li>
+      <li><div><b>Кривошипы и тяги</b><p>На оба конца оси по кривошипу 30 мм между отверстиями. Под крышкой спереди и сзади по уголку: ось в 33 мм от наружного края половины и в 12 мм ниже крышки. Тяга 73 мм между отверстиями. Перед тем как надеть тяги, поставьте кривошипы в положение «закрыто»: вниз, от уголка.</p></div></li>
+      <li><div><b>Батарейки и радиореле</b><p>Два бокса на 4 AA на дно, соединены последовательно. Пластина с платой на дно слева сзади. Подключите по таблице: перемычки +12 В на <span class="pin">NO</span> каналов A и B, минус на их <span class="pin">NC</span>, оба мотора на <span class="pin">COM</span>.</p></div></li>
+      <li><div><b>Проверьте</b><p>Режим платы «без фиксации». Держите A: обе половины поднимаются и через 3,8 с стоят открытыми. Держите дальше: закрываются. Если половина не доходит до упора или стучит о стенку, подгоните длину тяги на 2–3 мм.</p></div></li>
     </ol>
   </section>
 
-  <section class="sec" id="code">
-    <div class="code-head">
-      <header>
-        <h2>Код Arduino</h2>
-        <p class="note">cube_lid_remote.ino · библиотека «rc-switch» (для ИК-пульта — «IRremote» и <span class="pin">REMOTE_TYPE 2</span>)</p>
-      </header>
-      <button type="button" class="copy" id="copyBtn">Скопировать код</button>
-    </div>
-    <pre class="code" id="codeBlock"><code>/*
-  ================================================================
-   Деревянный куб 50×50×50 см с автоматической крышкой на пульте
-  ================================================================
-   Плата:      Arduino Nano (ATmega328P) / Uno
-   Привод:     линейный актуатор 12 В, ход 150 мм, 200–300 Н
-               (со встроенными концевиками — они есть почти у всех)
-   Силовая:    2-канальный модуль реле 5 В (10 А), собран как H-мост
-   Пульт:      радио 433 МГц (брелок EV1527/PT2262 + приёмник RXB6)
-               или любой ИК-пульт (приёмник VS1838B) — см. REMOTE_TYPE
-   Датчики:    концевик "крышка закрыта" (микрик или геркон),
-               по желанию: концевик "открыта", датчик тока ACS712
-
-   Логика одной кнопки пульта (как у гаражных ворот):
-     закрыта  -&gt; открывается
-     открыта  -&gt; закрывается
-     едет     -&gt; стоп
-     стоп     -&gt; едет в обратную сторону
-
-   Привязка пульта: удерживайте кнопку на корпусе 3 секунды
-   (светодиод часто мигает) и нажмите кнопку на пульте.
-   Код сохраняется в EEPROM и не теряется при отключении питания.
-
-   Библиотеки (Arduino IDE -&gt; Менеджер библиотек):
-     REMOTE_TYPE 1: "rc-switch" (автор sui77)
-     REMOTE_TYPE 2: "IRremote" (Armin Joachimsmeyer), версия 4.x
-  ================================================================
-*/
-
-#include &lt;EEPROM.h&gt;
-
-// ======================= НАСТРОЙКИ =======================
-
-// 1 = радиопульт 433 МГц, 2 = ИК-пульт
-#define REMOTE_TYPE 1
-
-// 1 = датчик установлен, 0 = нет
-#define USE_LIMIT_CLOSED   1   // концевик "крышка закрыта" (рекомендуется)
-#define USE_LIMIT_OPEN     0   // концевик "крышка открыта" (необязательно)
-#define USE_CURRENT_SENSOR 0   // ACS712 для защиты от защемления
-
-// Большинство китайских модулей реле включаются НИЗКИМ уровнем (LOW).
-// Если у вас реле щёлкает наоборот, поставьте 0.
-#define RELAY_ACTIVE_LOW 1
-
-// Время полного хода актуатора: ход / скорость.
-// 150 мм / 20 мм/с = 7,5 с. Измерьте секундомером и впишите своё.
-const unsigned long TRAVEL_TIME_MS      = 7500;
-// Сколько держать реле включённым: ход + 30 % запаса.
-// В конце хода актуатор сам отключится своим внутренним концевиком.
-const unsigned long MOVE_TIMEOUT_MS     = TRAVEL_TIME_MS * 13 / 10 + 500;
-// После срабатывания концевика "закрыто" ещё чуть дотянуть крышку
-const unsigned long CLOSE_OVERRUN_MS    = 250;
-// Пауза между остановкой и пуском в обратную сторону (бережёт реле и мотор)
-const unsigned long DIR_CHANGE_PAUSE_MS = 300;
-
-const unsigned long LEARN_HOLD_MS       = 3000;  // удержание кнопки для привязки
-const unsigned long LEARN_TIMEOUT_MS    = 15000; // сколько ждать код пульта
-const unsigned long REMOTE_RELEASE_MS   = 400;   // пауза = новое нажатие пульта
-const unsigned long BUTTON_DEBOUNCE_MS  = 30;
-
-// Датчик тока ACS712 (только при USE_CURRENT_SENSOR 1)
-const float ACS_MV_PER_A                = 185.0; // 5A: 185, 20A: 100, 30A: 66 мВ/А
-const float OBSTACLE_CURRENT_A          = 2.5;   // порог "крышка во что-то упёрлась"
-const unsigned long INRUSH_IGNORE_MS    = 400;   // пусковой ток не считаем
-
-// ======================= ПИНЫ =======================
-const uint8_t PIN_REMOTE       = 2;   // DATA приёмника 433 МГц / OUT ИК-приёмника
-const uint8_t PIN_BUTTON       = 4;   // кнопка на корпусе -&gt; GND
-const uint8_t PIN_LIMIT_CLOSED = 5;   // концевик "закрыто" (NO) -&gt; GND
-const uint8_t PIN_LIMIT_OPEN   = 6;   // концевик "открыто" (NO) -&gt; GND
-const uint8_t PIN_RELAY_OPEN   = 7;   // IN1 модуля реле: шток выдвигается
-const uint8_t PIN_RELAY_CLOSE  = 8;   // IN2 модуля реле: шток втягивается
-const uint8_t PIN_LED          = 13;  // встроенный светодиод (+ можно вывести наружу)
-const uint8_t PIN_CURRENT      = A0;  // OUT датчика ACS712
-
-// ======================= ПУЛЬТ =======================
-#if REMOTE_TYPE == 1
-  #include &lt;RCSwitch.h&gt;
-  RCSwitch rf;
-#elif REMOTE_TYPE == 2
-  #include &lt;IRremote.hpp&gt;
-#else
-  #error "REMOTE_TYPE должен быть 1 (433 МГц) или 2 (ИК)"
-#endif
-
-// ======================= СОСТОЯНИЕ =======================
-enum LidState : uint8_t { CLOSED, OPENING, OPEN, CLOSING, STOPPED };
-enum MotorDir : uint8_t { MOTOR_STOP, MOTOR_EXTEND, MOTOR_RETRACT };
-
-const char* const STATE_NAMES[] = { "ЗАКРЫТО", "ОТКРЫВАЕТСЯ", "ОТКРЫТО", "ЗАКРЫВАЕТСЯ", "СТОП" };
-
-LidState state        = STOPPED;
-LidState lastMove     = OPENING;   // при неизвестном положении первое нажатие закроет крышку
-MotorDir motor        = MOTOR_STOP;
-unsigned long moveStartMs   = 0;
-unsigned long motorStopMs   = 0;
-unsigned long closedSeenMs  = 0;   // когда сработал концевик "закрыто" (0 = ещё нет)
-bool fault            = false;     // крышка не дошла до концевика за отведённое время
-
-bool learning         = false;
-unsigned long learnStartMs = 0;
-
-// EEPROM: сохранённый код пульта
-const int      EE_ADDR  = 0;
-const uint16_t EE_MAGIC = 0xB0C5;
-struct SavedRemote { uint16_t magic; uint32_t code; };
-uint32_t remoteCode = 0;           // 0 = пульт не привязан
-
-#if USE_CURRENT_SENSOR
-float currentZeroMv = 2500.0;
-#endif
-
-// ======================= РЕЛЕ / МОТОР =======================
-void relayWrite(uint8_t pin, bool on) {
-  bool level = RELAY_ACTIVE_LOW ? !on : on;
-  digitalWrite(pin, level ? HIGH : LOW);
-}
-
-// Схема H-моста на двух реле:
-//   оба выключены -&gt; оба провода мотора на "минусе" (тормоз)
-//   реле 1        -&gt; выдвижение штока (открыть)
-//   реле 2        -&gt; втягивание штока (закрыть)
-// Оба реле одновременно никогда не включаются.
-void setMotor(MotorDir dir) {
-  if (dir == motor) return;
-
-  relayWrite(PIN_RELAY_OPEN, false);
-  relayWrite(PIN_RELAY_CLOSE, false);
-
-  if (dir == MOTOR_STOP) {
-    motor = MOTOR_STOP;
-    motorStopMs = millis();
-    return;
-  }
-
-  // Мотор только что крутился: даём ему остановиться перед пуском
-  if (motor != MOTOR_STOP) motorStopMs = millis();
-  unsigned long sinceStop = millis() - motorStopMs;
-  if (sinceStop &lt; DIR_CHANGE_PAUSE_MS) delay(DIR_CHANGE_PAUSE_MS - sinceStop);
-
-  relayWrite(dir == MOTOR_EXTEND ? PIN_RELAY_OPEN : PIN_RELAY_CLOSE, true);
-  motor = dir;
-}
-
-// ======================= ДАТЧИКИ =======================
-bool limitClosed() {
-#if USE_LIMIT_CLOSED
-  return digitalRead(PIN_LIMIT_CLOSED) == LOW;
-#else
-  return false;
-#endif
-}
-
-bool limitOpen() {
-#if USE_LIMIT_OPEN
-  return digitalRead(PIN_LIMIT_OPEN) == LOW;
-#else
-  return false;
-#endif
-}
-
-#if USE_CURRENT_SENSOR
-float readMilliVolts(uint8_t samples) {
-  long sum = 0;
-  for (uint8_t i = 0; i &lt; samples; i++) sum += analogRead(PIN_CURRENT);
-  return (sum / (float)samples) * 5000.0 / 1023.0;
-}
-
-float readCurrentA() {
-  float a = (readMilliVolts(8) - currentZeroMv) / ACS_MV_PER_A;
-  return a &lt; 0 ? -a : a;
-}
-#endif
-
-// ======================= ПЕРЕХОДЫ =======================
-void setState(LidState s) {
-  if (s == state) return;
-  state = s;
-  Serial.print(F("Крышка: "));
-  Serial.println(STATE_NAMES[s]);
-}
-
-void startOpening() {
-  fault = false;
-  if (limitOpen()) { setState(OPEN); return; }
-  setMotor(MOTOR_EXTEND);
-  moveStartMs = millis();
-  lastMove = OPENING;
-  setState(OPENING);
-}
-
-void startClosing() {
-  fault = false;
-  if (limitClosed()) { setState(CLOSED); return; }
-  setMotor(MOTOR_RETRACT);
-  moveStartMs = millis();
-  closedSeenMs = 0;
-  lastMove = CLOSING;
-  setState(CLOSING);
-}
-
-void stopMotion() {
-  setMotor(MOTOR_STOP);
-  setState(STOPPED);
-}
-
-// Одна команда с пульта или кнопки
-void onCommand() {
-  switch (state) {
-    case CLOSED:  startOpening(); break;
-    case OPEN:    startClosing(); break;
-    case OPENING:
-    case CLOSING: stopMotion();   break;
-    case STOPPED:
-      if (lastMove == OPENING) startClosing();
-      else                     startOpening();
-      break;
-  }
-}
-
-void updateMotion() {
-  if (state != OPENING &amp;&amp; state != CLOSING) return;
-  unsigned long now = millis();
-  unsigned long elapsed = now - moveStartMs;
-
-#if USE_CURRENT_SENSOR
-  // Защита от защемления: ток резко вырос -&gt; крышка во что-то упёрлась
-  if (elapsed &gt; INRUSH_IGNORE_MS &amp;&amp; closedSeenMs == 0) {
-    float amps = readCurrentA();
-    if (amps &gt; OBSTACLE_CURRENT_A) {
-      Serial.print(F("Препятствие! Ток, А: "));
-      Serial.println(amps);
-      if (state == CLOSING) startOpening();  // закрывалась -&gt; открыть обратно
-      else                  stopMotion();    // открывалась -&gt; просто стоп
-      return;
-    }
-  }
-#endif
-
-  if (state == OPENING) {
-    if (limitOpen()) {
-      setMotor(MOTOR_STOP);
-      setState(OPEN);
-    } else if (elapsed &gt;= MOVE_TIMEOUT_MS) {
-      setMotor(MOTOR_STOP);
-      // Без концевика "открыто" считаем, что актуатор дошёл до упора сам
-      if (USE_LIMIT_OPEN) { fault = true; setState(STOPPED); }
-      else                setState(OPEN);
-    }
-    return;
-  }
-
-  // state == CLOSING
-  if (closedSeenMs == 0 &amp;&amp; limitClosed()) closedSeenMs = now ? now : 1;
-
-  if (closedSeenMs != 0 &amp;&amp; now - closedSeenMs &gt;= CLOSE_OVERRUN_MS) {
-    setMotor(MOTOR_STOP);
-    setState(CLOSED);
-  } else if (elapsed &gt;= MOVE_TIMEOUT_MS) {
-    setMotor(MOTOR_STOP);
-    if (USE_LIMIT_CLOSED &amp;&amp; closedSeenMs == 0) {
-      fault = true;              // крышка не закрылась: что-то мешает
-      Serial.println(F("Ошибка: концевик 'закрыто' не сработал"));
-      setState(STOPPED);
-    } else {
-      setState(CLOSED);
-    }
-  }
-}
-
-// ======================= ПУЛЬТ =======================
-// Сырой код из приёмника, 0 = ничего не пришло
-uint32_t readRemoteRaw() {
-#if REMOTE_TYPE == 1
-  if (rf.available()) {
-    uint32_t v = rf.getReceivedValue();
-    rf.resetAvailable();
-    return v;
-  }
-#else
-  static uint32_t lastIr = 0;
-  if (IrReceiver.decode()) {
-    uint32_t v;
-    if (IrReceiver.decodedIRData.flags &amp; IRDATA_FLAGS_IS_REPEAT) {
-      v = lastIr;                // кнопку держат: тот же код
-    } else {
-      v = IrReceiver.decodedIRData.decodedRawData;
-      lastIr = v;
-    }
-    IrReceiver.resume();
-    return v;
-  }
-#endif
-  return 0;
-}
-
-// Код возвращается только в момент нового нажатия:
-// пульт шлёт код много раз, пока кнопку держат
-uint32_t pollRemote() {
-  static uint32_t lastCode = 0;
-  static unsigned long lastRxMs = 0;
-
-  uint32_t c = readRemoteRaw();
-  if (c == 0) return 0;
-
-  unsigned long now = millis();
-  bool newPress = (c != lastCode) || (now - lastRxMs &gt; REMOTE_RELEASE_MS);
-  lastCode = c;
-  lastRxMs = now;
-  return newPress ? c : 0;
-}
-
-void loadRemoteCode() {
-  SavedRemote s;
-  EEPROM.get(EE_ADDR, s);
-  remoteCode = (s.magic == EE_MAGIC) ? s.code : 0;
-}
-
-void saveRemoteCode(uint32_t code) {
-  SavedRemote s = { EE_MAGIC, code };
-  EEPROM.put(EE_ADDR, s);
-  remoteCode = code;
-}
-
-void blinkLed(uint8_t times, unsigned int ms) {
-  for (uint8_t i = 0; i &lt; times; i++) {
-    digitalWrite(PIN_LED, HIGH); delay(ms);
-    digitalWrite(PIN_LED, LOW);  delay(ms);
-  }
-}
-
-void startLearning() {
-  learning = true;
-  learnStartMs = millis();
-  Serial.println(F("Привязка: нажмите кнопку на пульте"));
-}
-
-void handleRemote() {
-  uint32_t code = pollRemote();
-
-  if (learning) {
-    if (code != 0) {
-      saveRemoteCode(code);
-      learning = false;
-      Serial.print(F("Пульт привязан, код: "));
-      Serial.println(code);
-      blinkLed(3, 150);
-    } else if (millis() - learnStartMs &gt; LEARN_TIMEOUT_MS) {
-      learning = false;
-      Serial.println(F("Привязка отменена (нет сигнала)"));
-    }
-    return;
-  }
-
-  if (code == 0) return;
-  if (remoteCode != 0 &amp;&amp; code == remoteCode) {
-    onCommand();
-  } else {
-    Serial.print(F("Чужой код: "));
-    Serial.println(code);
-  }
-}
-
-// ======================= КНОПКА НА КОРПУСЕ =======================
-// Короткое нажатие = команда, удержание 3 с = привязка пульта.
-// Если крышка едет, нажатие останавливает её сразу.
-void handleButton() {
-  static bool stable = HIGH, lastRead = HIGH;
-  static unsigned long changedMs = 0, pressedMs = 0;
-  static bool consumed = false;
-
-  bool r = digitalRead(PIN_BUTTON);
-  unsigned long now = millis();
-  if (r != lastRead) { lastRead = r; changedMs = now; }
-  if (now - changedMs &lt; BUTTON_DEBOUNCE_MS) return;
-
-  if (r != stable) {
-    stable = r;
-    if (stable == LOW) {                         // нажали
-      pressedMs = now;
-      consumed = false;
-      if (state == OPENING || state == CLOSING) { stopMotion(); consumed = true; }
-      else if (learning) { learning = false; consumed = true;
-                           Serial.println(F("Привязка отменена")); }
-    } else if (!consumed) {                      // отпустили
-      onCommand();
-    }
-  }
-
-  if (stable == LOW &amp;&amp; !consumed &amp;&amp; now - pressedMs &gt;= LEARN_HOLD_MS) {
-    consumed = true;
-    startLearning();
-  }
-}
-
-// ======================= СВЕТОДИОД =======================
-void updateLed() {
-  unsigned long t = millis();
-  bool on;
-  if (learning)                        on = (t / 80) % 2;          // очень часто
-  else if (fault)                      on = (t % 1000) &lt; 100 || ((t % 1000) &gt; 200 &amp;&amp; (t % 1000) &lt; 300); // двойная вспышка
-  else switch (state) {
-    case CLOSED:  on = false; break;
-    case OPEN:    on = true;  break;
-    case STOPPED: on = (t / 1000) % 2; break;                       // медленно
-    default:      on = (t / 200) % 2;  break;                       // едет
-  }
-  digitalWrite(PIN_LED, on ? HIGH : LOW);
-}
-
-// ======================= SETUP / LOOP =======================
-void setup() {
-  // Сначала "выключено", потом OUTPUT — чтобы реле не щёлкнули при старте
-  relayWrite(PIN_RELAY_OPEN, false);
-  relayWrite(PIN_RELAY_CLOSE, false);
-  pinMode(PIN_RELAY_OPEN, OUTPUT);
-  pinMode(PIN_RELAY_CLOSE, OUTPUT);
-
-  pinMode(PIN_LED, OUTPUT);
-  pinMode(PIN_BUTTON, INPUT_PULLUP);
-  pinMode(PIN_LIMIT_CLOSED, INPUT_PULLUP);
-  pinMode(PIN_LIMIT_OPEN, INPUT_PULLUP);
-
-  Serial.begin(115200);
-  Serial.println(F("\nКуб с крышкой: старт"));
-
-#if REMOTE_TYPE == 1
-  rf.enableReceive(digitalPinToInterrupt(PIN_REMOTE));
-#else
-  IrReceiver.begin(PIN_REMOTE, DISABLE_LED_FEEDBACK);
-#endif
-
-#if USE_CURRENT_SENSOR
-  delay(100);
-  currentZeroMv = readMilliVolts(64);   // ноль датчика при выключенном моторе
-#endif
-
-  loadRemoteCode();
-  if (remoteCode == 0) Serial.println(F("Пульт не привязан: удерживайте кнопку 3 с"));
-  else { Serial.print(F("Код пульта: ")); Serial.println(remoteCode); }
-
-  // Начальное положение
-  if (limitClosed())     { state = CLOSED; lastMove = CLOSING; }
-  else if (limitOpen())  { state = OPEN;   lastMove = OPENING; }
-  else                   { state = STOPPED; lastMove = OPENING; } // первое нажатие закроет
-  Serial.print(F("Крышка: "));
-  Serial.println(STATE_NAMES[state]);
-}
-
-void loop() {
-  handleButton();
-  handleRemote();
-  updateMotion();
-  updateLed();
-}
-</code></pre>
-  </section>
 </main>
 <footer class="wrap">Размеры в миллиметрах. Модель масштабна: сетка на полу — 100 мм.</footer>
 
@@ -860,38 +467,79 @@ void loop() {
 (function () {
   'use strict';
   const $ = (s) => document.querySelector(s);
+  const D2R = Math.PI / 180;
 
-  // ---------------- parts ----------------
+  // ================= geometry (mm, root coords: y up, +z = front, left half; the right one is mirrored) =================
+  const WALL_T = 12, WALL_H = 484, LID_T = 4;
+  const TOP = WALL_T + WALL_H;                 // 496: top of the walls = lid underside
+  const H = { x: -251.5, y: TOP + 5.5 };       // hinge axis of the left half (piano hinge on the outer top edge)
+  const LID_A = 35, LID_C = 12;                // lid bracket pin: 35 mm from the hinge, 12 mm below the lid
+  const S = { x: H.x + 50, y: H.y - 58 };      // output shaft (crank axis)
+  const TH_MIN = 0.5 * D2R, TH_MAX = 100 * D2R;
+  const MOTOR_RPM = 800, RATIO = 100, OUT_RPM = MOTOR_RPM / RATIO;
+  // gear chain from the output shaft down to the motor (centre distances 30, 25, 30 for module 1)
+  const T3 = { x: S.x + 30 * 0.6, y: S.y - 30 * 0.8 };
+  const T2 = { x: T3.x - 25 * 0.8, y: T3.y - 25 * 0.6 };
+  const MO = { x: T2.x + 30 * 0.8, y: T2.y - 30 * 0.6 };
+  const Z = { plateB: 166, st3: 173, st2: 180, st1: 187, plateF: 192, motorFace: 194.5, crankF: 198, linkF: 202, brkF: 205.5,
+              bearR: -190, crankR: -199, linkR: -203, brkR: -206.5 };
+
+  // ---- 4-bar: crank (S, r) – link (l) – lid (hinge H, pin at LID_A/LID_C). Extremes at TH_MIN / TH_MAX. ----
+  const PIN_Y = -5.5 - LID_C;
+  function lidPin(t) { return { x: LID_A * Math.cos(t) - PIN_Y * Math.sin(t), y: LID_A * Math.sin(t) + PIN_Y * Math.cos(t) }; } // relative to H
+  const SR = { x: S.x - H.x, y: S.y - H.y };
+  const pC = lidPin(TH_MIN), pO = lidPin(TH_MAX);
+  const d1 = Math.hypot(pC.x - SR.x, pC.y - SR.y), d2 = Math.hypot(pO.x - SR.x, pO.y - SR.y);
+  const CR = Math.abs(d1 - d2) / 2, CL = (d1 + d2) / 2;
+  const PHI_CLOSED = d1 > d2 ? Math.atan2(pC.y - SR.y, pC.x - SR.x) : Math.atan2(SR.y - pC.y, SR.x - pC.x);
+  const PHI_OPEN = d2 > d1 ? Math.atan2(pO.y - SR.y, pO.x - SR.x) : Math.atan2(SR.y - pO.y, SR.x - pO.x);
+  const PIN_B = Math.hypot(LID_A, PIN_Y), PIN_T0 = Math.atan2(PIN_Y, LID_A);
+  function wrap(a) { return a - 2 * Math.PI * Math.floor((a + Math.PI) / (2 * Math.PI)); }
+  function solveTheta(phi, prev) {
+    const qx = SR.x + CR * Math.cos(phi), qy = SR.y + CR * Math.sin(phi);
+    const dq = Math.hypot(qx, qy), base = Math.atan2(qy, qx);
+    const A = Math.acos(Math.max(-1, Math.min(1, (PIN_B * PIN_B + dq * dq - CL * CL) / (2 * PIN_B * dq))));
+    const c1 = base + A - PIN_T0, c2 = base - A - PIN_T0;
+    const t1 = prev + wrap(c1 - prev), t2 = prev + wrap(c2 - prev);
+    return Math.abs(t1 - prev) < Math.abs(t2 - prev) ? t1 : t2;
+  }
+  // lookup table theta(phi), phi measured from PHI_CLOSED, built by continuity
+  const LUT_N = 2880, LUT = new Float64Array(LUT_N + 1);
+  { let th = TH_MIN; for (let i = 0; i <= LUT_N; i++) { th = solveTheta(PHI_CLOSED + (i / LUT_N) * 2 * Math.PI, th); LUT[i] = th; } }
+  function thetaAt(phi) {
+    let f = ((phi - PHI_CLOSED) / (2 * Math.PI)) % 1; if (f < 0) f += 1;
+    const k = f * LUT_N, i = Math.floor(k), w = k - i;
+    return LUT[i] * (1 - w) + LUT[Math.min(LUT_N, i + 1)] * w;
+  }
+  const OMEGA = OUT_RPM * 2 * Math.PI / 60;          // rad/s at the output shaft
+  const OPEN_TIME = (((PHI_OPEN - PHI_CLOSED) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) / OMEGA;
+
+  // ================= parts =================
   const PARTS = [
     { g: 'Дерево', items: [
-      { id: 'lid', name: 'Крышка', spec: 'фанера 500 × 500 × 18', qty: '1', wood: true, note: 'Висит на рояльной петле. Снизу кронштейн актуатора: 114 мм от заднего края, 48 мм от правого.' },
-      { id: 'bottom', name: 'Дно', spec: '500 × 500 × 18', qty: '1', wood: true, note: 'Стенки стоят на дне, крепится снизу саморезами 4 × 40. По углам резиновые ножки.' },
-      { id: 'front', name: 'Передняя стенка', spec: '500 × 464 × 18', qty: '1', wood: true, note: 'Изнутри у верхнего края — концевик «закрыто».' },
-      { id: 'back', name: 'Задняя стенка', spec: '500 × 464 × 18', qty: '1', wood: true, note: 'Снаружи: петля, гнездо 12 В, выключатель, кнопка и светодиод.' },
-      { id: 'sides', name: 'Боковые стенки', spec: '464 × 464 × 18', qty: '2', wood: true, note: 'Зажаты между передней и задней. На правой — бобышка с нижним кронштейном.' },
+      { id: 'lid', name: 'Крышка, две половины', spec: 'фанера 500 × 250 × 4', qty: '2', wood: true, note: 'Каждая на своей рояльной петле по наружному ребру боковой стенки, открывается наружу. Под ней спереди и сзади по уголку для тяги: 33 мм от наружного края, ось на 12 мм ниже крышки. Весит около 0,33 кг.' },
+      { id: 'bottom', name: 'Дно', spec: '500 × 500 × 12', qty: '1', wood: true, note: 'Стенки стоят на дне, крепится снизу саморезами 3,5 × 30. По углам резиновые ножки.' },
+      { id: 'front', name: 'Передняя стенка', spec: '500 × 484 × 12', qty: '1', wood: true, note: 'Изнутри у верхних углов стоят оба мотора с редукторами.' },
+      { id: 'back', name: 'Задняя стенка', spec: '500 × 484 × 12', qty: '1', wood: true, note: 'Снаружи выключатель.' },
+      { id: 'sides', name: 'Боковые стенки', spec: '476 × 484 × 12', qty: '2', wood: true, note: 'Снаружи рояльная петля, изнутри редуктор, выходная ось и её задняя опора.' },
     ]},
     { g: 'Механика', items: [
-      { id: 'hinge', name: 'Рояльная петля', spec: '460 мм, ширина 32 мм', qty: '1', note: 'Ось по шву между задней стенкой и крышкой. Саморезы 3 × 12.' },
-      { id: 'actuator', name: 'Линейный актуатор 12 В', spec: 'ход 150 мм · 200–500 Н · 260 мм ось–ось', qty: '1', note: 'Нужен со встроенными концевиками. Расчётная нагрузка до 62 Н, так что запас по силе тройной и больше. Скорость 15–30 мм/с.' },
-      { id: 'brackets', name: 'Кронштейны актуатора', spec: 'U-образные, ось Ø 6–8 мм', qty: '2', note: 'Обычно идут в комплекте с актуатором. Нижний стоит на бобышке 60 × 60 × 40 на правой стенке.' },
-      { id: 'screws', name: 'Крепёж', spec: 'конфирмат 5 × 50 · саморез 4 × 40 · ПВА', qty: '16 + 16', note: 'По 4 конфирмата на угол, саморезы в дно каждые 100–120 мм.' },
+      { id: 'hinge', name: 'Рояльная петля', spec: '500 мм · ширина 25 мм', qty: '2', note: 'Одна полка на боковую стенку снаружи (саморезы 3 × 10), вторая сверху на крышку (винты M3 с гайками насквозь).' },
+      { id: 'gearbox', name: 'Редуктор 1 : 100', spec: 'шестерни 10→50 · 10→40 · 10→50, модуль 1', qty: '2', note: '800 → 160 → 40 → 8 об/мин. На каждый: три шестерни по 10 зубьев, две по 50, одна на 40, две пластины со стойками и две короткие оси Ø 4 мм.' },
+      { id: 'crank', name: 'Выходная ось и кривошипы', spec: 'ось Ø 8 × 400 мм · кривошип 30 мм', qty: '2', note: 'Ось идёт вдоль боковой стенки: спереди через редуктор, сзади через опору. Кривошипы на обоих концах, чтобы тонкая крышка не перекашивалась.' },
+      { id: 'link', name: 'Тяги и уголки', spec: 'тяга Makeblock 73 мм между отверстиями', qty: '4 + 4', note: 'Тяга соединяет кривошип с уголком под крышкой. Шарниры — винты M4 с самоконтрящимися гайками, не затягивать.' },
+      { id: 'screws', name: 'Крепёж', spec: 'саморез 3,5 × 30 · ПВА', qty: '16 + 16', note: 'По 4 самореза на угол и в дно каждые 100–120 мм, всё со сверловкой.' },
       { id: 'feet', name: 'Ножки', spec: 'резиновые Ø 32 × 10', qty: '4', note: 'Чтобы дно не стояло на полу и не скользило.' },
     ]},
     { g: 'Электроника', items: [
-      { id: 'arduino', name: 'Arduino Nano', spec: 'на плате-терминале с клеммами', qty: '1', note: 'Клеммная плата избавляет от пайки: провода просто зажимаются винтами.' },
-      { id: 'relay', name: 'Модуль реле, 2 канала', spec: '5 В, контакты 10 А', qty: '1', note: 'Собран как H-мост: меняет полярность на актуаторе.' },
-      { id: 'buck', name: 'Преобразователь LM2596', spec: '12 → 5,0 В', qty: '1', note: 'Выставьте 5,0 В подстроечным винтом до подключения Arduino.' },
-      { id: 'rf', name: 'Приёмник 433 МГц RXB6', spec: 'антенна — провод 17,3 см', qty: '1', note: 'Супергетеродин RXB6 ловит брелок сквозь дерево метров на 20–30.' },
-      { id: 'remote', name: 'Брелок 433 МГц', spec: 'фиксированный код EV1527 / PT2262', qty: '1', note: 'Брелоки с плавающим кодом (KeeLoq) не подойдут. В модели он лежит на полу, его можно нажать.' },
-      { id: 'limit', name: 'Концевик «закрыто»', spec: 'микрик KW11 с роликом', qty: '1', note: 'Нажимается крышкой. Без него скетч закрывает крышку по таймеру.' },
-      { id: 'power', name: 'Гнездо, выключатель, предохранитель', spec: '5,5 × 2,1 мм · клавиша · 5 А', qty: '1', note: 'На задней стенке. Сетевых 220 В внутри ящика нет.' },
-      { id: 'panel', name: 'Кнопка и светодиод', spec: 'кнопка 12 мм · LED 5 мм + 330 Ом', qty: '1', note: 'Короткое нажатие — как пульт. Удержание 3 с — привязка брелока. Светодиод мигает, пока крышка едет.' },
-      { id: 'wires', name: 'Провода', spec: '0,75 мм² силовые · 0,2 мм² сигнальные', qty: '≈ 3 м', note: 'Силовые: гнездо, реле, актуатор. Остальное тонким.' },
-      { id: 'adapter', name: 'Блок питания 12 В 5 А', spec: 'адаптер со штекером 5,5 × 2,1', qty: '1', nomodel: true, note: 'Внешний, как у ноутбука. Пусковой ток актуатора до 3–5 А.' },
+      { id: 'motor', name: 'Мотор 380, 12 В', spec: '800 об/мин (ваш замер) · на валу шестерня 10 зуб.', qty: '2', note: 'По одному на каждую половину, подключены параллельно. Если на 12 В он крутит не 800, а около 8000 об/мин, нужна ещё одна пара 10 → 100.' },
+      { id: 'rfrelay', name: 'Радиореле 433 МГц, 4 канала', spec: '12 В · NO / COM / NC · режим «без фиксации»', qty: '1', note: 'Каналы A и B собраны как H-мост, к ним параллельно оба мотора. Реле включено, только пока держите кнопку. C и D свободны.' },
+      { id: 'remote', name: 'Брелок 433 МГц, 4 кнопки', spec: 'идёт в комплекте с платой', qty: '2', note: 'Держите A — половины открываются, держите дальше — закрываются. B крутит в обратную сторону. В модели брелок лежит на полу, его кнопки можно нажимать.' },
+      { id: 'battery', name: 'Батарейки AA и 2 бокса на 4 шт.', spec: '8 × 1,5 В = 12 В', qty: '8 + 2', note: 'Боксы последовательно: минус первого к плюсу второго. Заряжать ничего не надо, сели — заменили. Подойдут и аккумуляторы NiMH AA: будет 9,6 В, крышка поедет чуть медленнее.' },
+      { id: 'power', name: 'Выключатель и предохранитель', spec: 'клавиша на задней стенке · 5 А', qty: '1', note: 'Выключайте ящик, когда он не нужен: плата и в ожидании тратит батарейки.' },
+      { id: 'wires', name: 'Провода', spec: '0,75 мм² красный и чёрный', qty: '≈ 3 м', note: 'От батареек к плате и от платы к двум моторам у передней стенки.' },
     ]},
   ];
-  const PART_BY_ID = {};
-  PARTS.forEach((g) => g.items.forEach((p) => { PART_BY_ID[p.id] = p; }));
 
   let selected = null;
   let on3dSelect = null;
@@ -907,8 +555,6 @@ void loop() {
       if (br.top < rr.top || br.bottom > rr.bottom) rail.scrollTop += br.top - rr.top - 60;
     }
   }
-
-  // ---------------- parts list UI ----------------
   const listEl = $('#partsList');
   PARTS.forEach((g) => {
     const grp = document.createElement('div');
@@ -917,7 +563,7 @@ void loop() {
     g.items.forEach((p) => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'prow' + (p.nomodel ? ' nomodel' : '');
+      b.className = 'prow';
       b.dataset.part = p.id;
       b.setAttribute('aria-pressed', 'false');
       b.innerHTML = '<span class="nm"></span><span class="qty"></span><span class="sp"></span><span class="nt"></span>';
@@ -931,60 +577,64 @@ void loop() {
     listEl.appendChild(grp);
   });
 
-  // ---------------- copy code ----------------
-  const copyBtn = $('#copyBtn');
-  copyBtn.addEventListener('click', () => {
-    const text = $('#codeBlock').textContent;
-    const done = () => { copyBtn.textContent = 'Скопировано'; setTimeout(() => { copyBtn.textContent = 'Скопировать код'; }, 1800); };
-    const fallback = () => {
-      const r = document.createRange(); r.selectNodeContents($('#codeBlock'));
-      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      copyBtn.textContent = 'Выделено — нажмите Ctrl+C';
-    };
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
-      else fallback();
-    } catch (e) { fallback(); }
-  });
-
-  // ---------------- simulation (same logic as the sketch) ----------------
-  const STROKE = 150, LMIN = 260, ROD_SPEED = 20; // mm, mm, mm/s
-  const sim = { state: 'OPEN', s: STROKE, lastMove: 'OPENING', speed: 1, theta: Math.PI / 2 };
+  // ================= simulation: momentary radio relay, channel A = forward, B = backward =================
+  const sim = { phi: PHI_OPEN, relays: [false, false, false, false], held: [false, false, false, false], speed: 1, theta: TH_MAX, dTheta: 0, lastMove: 'OPENING' };
   const STATE_RU = { CLOSED: 'ЗАКРЫТО', OPENING: 'ОТКРЫВАЕТСЯ', OPEN: 'ОТКРЫТО', CLOSING: 'ЗАКРЫВАЕТСЯ', STOPPED: 'СТОП' };
-  function nextAction() {
-    switch (sim.state) {
-      case 'CLOSED': return '→ открыть';
-      case 'OPEN': return '→ закрыть';
-      case 'OPENING': case 'CLOSING': return '→ стоп';
-      default: return sim.lastMove === 'OPENING' ? '→ закрыть' : '→ открыть';
-    }
+  function motorDir() {
+    const a = sim.relays[0], b = sim.relays[1];
+    if (a && !b) return 1;
+    if (b && !a) return -1;
+    return 0;
   }
-  function press() {
-    switch (sim.state) {
-      case 'CLOSED': sim.state = 'OPENING'; sim.lastMove = 'OPENING'; break;
-      case 'OPEN': sim.state = 'CLOSING'; sim.lastMove = 'CLOSING'; break;
-      case 'OPENING': case 'CLOSING': sim.state = 'STOPPED'; break;
-      case 'STOPPED': sim.state = sim.lastMove === 'OPENING' ? 'CLOSING' : 'OPENING'; sim.lastMove = sim.state; break;
+  function stateNow() {
+    if (motorDir() !== 0) {
+      if (sim.dTheta > 1e-6) sim.lastMove = 'OPENING';
+      else if (sim.dTheta < -1e-6) sim.lastMove = 'CLOSING';
+      return sim.lastMove;
     }
-    pressFx = 0.25;
-    updateUiState();
+    if (sim.theta > TH_MAX - 2 * D2R) return 'OPEN';
+    if (sim.theta < TH_MIN + 1.5 * D2R) return 'CLOSED';
+    return 'STOPPED';
   }
-  let pressFx = 0;
+  const fobFx = [0, 0, 0, 0];
+  function pressDown(ch) { if (ch < 2) sim.relays[ch] = true; sim.held[ch] = true; fobFx[ch] = 0.25; updateUiState(); }
+  function pressUp(ch) { sim.held[ch] = false; if (ch < 2) sim.relays[ch] = false; updateUiState(); }
 
-  // H-bridge schematic + HUD
-  const blade1 = $('#blade1'), blade2 = $('#blade2'), hbState = $('#hbState');
+  const blade1 = $('#blade1'), blade2 = $('#blade2'), hbState = $('#hbState'), hbSub = $('#hbSub');
+  let shownState = '';
   function updateUiState() {
-    $('#hudState').textContent = STATE_RU[sim.state];
-    $('#remoteNext').textContent = nextAction();
-    const open = sim.state === 'OPENING', close = sim.state === 'CLOSING';
-    blade1.setAttribute('x2', open ? '122' : '122'); blade1.setAttribute('y2', open ? '142' : '194');
-    blade2.setAttribute('x2', '478'); blade2.setAttribute('y2', close ? '142' : '194');
-    hbState.textContent = open ? 'реле 1: красный на +12 В → открытие' : close ? 'реле 2: чёрный на +12 В → закрытие' : 'стоп: оба на минусе';
+    const st = stateNow();
+    shownState = st;
+    $('#hudState').textContent = STATE_RU[st];
+    const a = sim.relays[0], b = sim.relays[1];
+    blade1.setAttribute('x2', '122'); blade1.setAttribute('y2', a ? '142' : '194');
+    blade2.setAttribute('x2', '478'); blade2.setAttribute('y2', b ? '142' : '194');
+    let main, sub;
+    if (a && b) { main = 'стоп'; sub = 'оба провода на +12 В'; }
+    else if (a) { main = 'вперёд'; sub = 'красный на +12 В, чёрный на минусе'; }
+    else if (b) { main = 'назад'; sub = 'чёрный на +12 В, красный на минусе'; }
+    else { main = 'стоп'; sub = 'оба провода на минусе'; }
+    hbState.textContent = main;
+    hbSub.textContent = sub;
   }
-  $('#remoteBtn').addEventListener('click', press);
+  document.querySelectorAll('.fobpad .remote').forEach((btn) => {
+    const ch = Number(btn.dataset.ch);
+    let down = false;
+    const start = () => { if (down) return; down = true; btn.classList.add('held'); pressDown(ch); };
+    const end = () => { if (!down) return; down = false; btn.classList.remove('held'); pressUp(ch); };
+    btn.addEventListener('pointerdown', (e) => { e.preventDefault(); try { btn.setPointerCapture(e.pointerId); } catch (_) {} start(); });
+    btn.addEventListener('pointerup', end);
+    btn.addEventListener('pointercancel', end);
+    btn.addEventListener('lostpointercapture', end);
+    btn.addEventListener('keydown', (e) => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); start(); } });
+    btn.addEventListener('keyup', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); end(); } });
+    btn.addEventListener('blur', end);
+    btn.addEventListener('contextmenu', (e) => e.preventDefault());
+  });
   document.querySelectorAll('input[name="spd"]').forEach((r) => r.addEventListener('change', () => { sim.speed = Number(r.value); }));
+  $('#modeHint').textContent = 'Держите A: половины открываются за ' + OPEN_TIME.toFixed(1).replace('.', ',') + ' с. Держите дальше: закрываются. Отпустили: стоят. B крутит то же самое в обратную сторону.';
 
-  // ---------------- 3D ----------------
+  // ================= 3D =================
   const loadingEl = $('#loading');
   if (!window.THREE || !THREE.OrbitControls) {
     loadingEl.textContent = 'Не удалось загрузить 3D-библиотеку. Проверьте интернет и обновите страницу.';
@@ -1003,19 +653,19 @@ void loop() {
   const maxAniso = renderer.capabilities.getMaxAnisotropy();
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(35, 1, 10, 20000);
+  const camera = new THREE.PerspectiveCamera(35, 1, 5, 20000);
   const controls = new THREE.OrbitControls(camera, canvas);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.minDistance = 300;
+  controls.minDistance = 120;
   controls.maxDistance = 4200;
   controls.maxPolarAngle = Math.PI * 0.495;
   const VIEWS = {
-    front: { p: [-1080, 1180, 1250], t: [0, 330, 0] },
+    front: { p: [-1000, 1250, 1300], t: [0, 330, 0] },
+    gears: { p: [-120, 470, 520], t: [-190, 418, 185], xray: true },
     back: { p: [-1100, 720, -1250], t: [-40, 200, -120] },
     top: { p: [240, 1700, 620], t: [0, 140, -40] },
   };
-  // narrow screens: step back so the whole box fits
   function viewPose(name) {
     const v = VIEWS[name], a = camera.aspect || 1.4;
     const fit = a < 1.3 ? Math.pow(1.3 / a, 0.9) : 1;
@@ -1031,8 +681,8 @@ void loop() {
   Object.assign(sun.shadow.camera, { left: -800, right: 800, top: 800, bottom: -800, near: 200, far: 4000 });
   sun.shadow.bias = -0.0005;
   scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.4);
-  fill.position.set(-900, 500, -600);
+  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.45);
+  fill.position.set(-900, 500, 600);
   scene.add(fill);
 
   const ground = new THREE.Mesh(new THREE.PlaneGeometry(8000, 8000), new THREE.ShadowMaterial({ opacity: 0.18 }));
@@ -1040,7 +690,7 @@ void loop() {
   ground.receiveShadow = true;
   scene.add(ground);
   let grid = null;
-
+  let dimMat = null;
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#888'; }
   function applyTheme() {
     scene.background = new THREE.Color(cssVar('--stage'));
@@ -1100,8 +750,6 @@ void loop() {
   const grains = [tex(grainCanvas(11)), tex(grainCanvas(29)), tex(grainCanvas(47)), tex(grainCanvas(83))];
   const edgeC = edgeCanvas();
   const edgeH = tex(edgeC), edgeV = tex(edgeC, Math.PI / 2);
-
-  // BoxGeometry faces: +x -x +y -y +z -z ; their (u,v) axes
   const FACE_V = [1, 1, 2, 2, 1, 1], FACE_N = [0, 0, 1, 1, 2, 2];
   function plyMats(size, grain) {
     const k = size.indexOf(Math.min(...size));
@@ -1115,20 +763,21 @@ void loop() {
     steel: new THREE.MeshStandardMaterial({ color: 0xb9c0c6, metalness: 0.85, roughness: 0.32 }),
     darkSteel: new THREE.MeshStandardMaterial({ color: 0x51585e, metalness: 0.7, roughness: 0.45 }),
     chrome: new THREE.MeshStandardMaterial({ color: 0xe6eaee, metalness: 1.0, roughness: 0.15 }),
-    alu: new THREE.MeshStandardMaterial({ color: 0xc8cdd2, metalness: 0.75, roughness: 0.3 }),
+    can: new THREE.MeshStandardMaterial({ color: 0xc3c8cc, metalness: 0.8, roughness: 0.35 }),
     plastic: new THREE.MeshStandardMaterial({ color: 0x1c1f22, metalness: 0.05, roughness: 0.55 }),
+    white: new THREE.MeshStandardMaterial({ color: 0xece9e2, roughness: 0.6 }),
     rubber: new THREE.MeshStandardMaterial({ color: 0x202224, roughness: 0.95 }),
-    pcbBlue: new THREE.MeshStandardMaterial({ color: 0x1d4f9e, roughness: 0.5 }),
+    mbBlue: new THREE.MeshStandardMaterial({ color: 0x2b8fd6, metalness: 0.55, roughness: 0.35 }),
+    pinion: new THREE.MeshStandardMaterial({ color: 0xd7b25a, metalness: 0.85, roughness: 0.3 }),
+    acrylic: new THREE.MeshStandardMaterial({ color: 0xbfd9ee, metalness: 0.1, roughness: 0.15, transparent: true, opacity: 0.3, depthWrite: false }),
     pcbGreen: new THREE.MeshStandardMaterial({ color: 0x1f6a3c, roughness: 0.5 }),
     relayBlue: new THREE.MeshStandardMaterial({ color: 0x2f6fd6, roughness: 0.4 }),
-    termGreen: new THREE.MeshStandardMaterial({ color: 0x2e8f50, roughness: 0.6 }),
     termBlue: new THREE.MeshStandardMaterial({ color: 0x2166c4, roughness: 0.6 }),
     chip: new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.4 }),
     brass: new THREE.MeshStandardMaterial({ color: 0xc9a24a, metalness: 0.9, roughness: 0.3 }),
     red: new THREE.MeshStandardMaterial({ color: 0xc8332a, roughness: 0.5 }),
-    pine: new THREE.MeshStandardMaterial({ color: 0xd8b37a, roughness: 0.8 }),
   };
-  const WIRE = { red: 0xd23b2e, black: 0x26292c, yellow: 0xe2b100, green: 0x2f9e54, white: 0xe8e8e8, blue: 0x2f6fd8, orange: 0xe07a1f };
+  const WIRE = { red: 0xd23b2e, black: 0x26292c };
 
   // ---------- registry ----------
   const partMeshes = {};
@@ -1136,7 +785,7 @@ void loop() {
     obj.traverse((o) => {
       if (!o.isMesh || o.userData.part) return;
       o.userData.part = id;
-      o.castShadow = true; o.receiveShadow = true;
+      if (!o.userData.noShadow) { o.castShadow = true; o.receiveShadow = true; }
       o.material = Array.isArray(o.material) ? o.material.map((m) => m.clone()) : o.material.clone();
       (partMeshes[id] = partMeshes[id] || []).push(o);
     });
@@ -1148,8 +797,49 @@ void loop() {
   function cylX(r, h, mat, x, y, z, parent, seg) { const m = cylY(r, h, mat, x, y, z, parent, seg); m.rotation.z = Math.PI / 2; return m; }
   function cylZ(r, h, mat, x, y, z, parent, seg) { const m = cylY(r, h, mat, x, y, z, parent, seg); m.rotation.x = Math.PI / 2; return m; }
 
+  // spur gear, module 1, in the XY plane, axis along z; tooth 0 centred on +x
+  const gearGeoCache = {};
+  function gearGeo(teeth, hole) {
+    const key = teeth + '/' + hole;
+    if (gearGeoCache[key]) return gearGeoCache[key];
+    const R = teeth / 2, Ra = R + 1, Rf = R - 1.25, st = 2 * Math.PI / teeth;
+    const s = new THREE.Shape();
+    for (let i = 0; i < teeth; i++) {
+      const pts = [[Rf, -0.5], [Rf, -0.3], [Ra, -0.13], [Ra, 0.13], [Rf, 0.3]];
+      pts.forEach(([r, f], k) => {
+        const a = (i + f) * st, x = r * Math.cos(a), y = r * Math.sin(a);
+        if (i === 0 && k === 0) s.moveTo(x, y); else s.lineTo(x, y);
+      });
+    }
+    s.closePath();
+    const h = new THREE.Path(); h.absarc(0, 0, hole, 0, Math.PI * 2, true); s.holes.push(h);
+    if (teeth >= 40) {
+      const rr = (Rf - hole) * 0.28, rc = hole + (Rf - hole) * 0.52;
+      for (let k = 0; k < 4; k++) {
+        const p = new THREE.Path(); const a = k * Math.PI / 2 + Math.PI / 4;
+        p.absarc(rc * Math.cos(a), rc * Math.sin(a), rr, 0, Math.PI * 2, true); s.holes.push(p);
+      }
+    }
+    const g = new THREE.ExtrudeGeometry(s, { depth: 4, bevelEnabled: false, curveSegments: 10 });
+    g.translate(0, 0, -2);
+    gearGeoCache[key] = g;
+    return g;
+  }
+  function gear(teeth, mat, c, z, parent) {
+    const m = new THREE.Mesh(gearGeo(teeth, teeth >= 40 ? 4 : 1.2), mat);
+    m.position.set(c.x, c.y, z);
+    if (teeth >= 40) cylZ(6, 7, M.mbBlue, 0, 0, 0, m, 20); // hub
+    parent.add(m);
+    return m;
+  }
+  // driven gear angle for a mesh: a2 = -(z1/z2)·a1 + C, with teeth interleaved on the line of centres
+  function meshConst(c1, z1, c2, z2) {
+    const psi = Math.atan2(c2.y - c1.y, c2.x - c1.x);
+    return psi + Math.PI + psi * z1 / z2 - Math.PI / z2;
+  }
+
   const root = new THREE.Group();
-  root.position.y = 10; // feet height
+  root.position.y = 10; // feet
   scene.add(root);
 
   const explodables = [];
@@ -1166,196 +856,211 @@ void loop() {
     return m;
   }
 
-  // ---------- box panels (root coords, mm; y up, +z = front) ----------
-  const bottom = panel('bottom', [500, 18, 500], [0, 9, 0], [0, -1, 0], 130, grains[0]);
-  const front = panel('front', [500, 464, 18], [0, 250, 241], [0, 0, 1], 170, grains[1]);
-  const back = panel('back', [500, 464, 18], [0, 250, -241], [0, 0, -1], 170, grains[2]);
-  const left = panel('sides', [18, 464, 464], [-241, 250, 0], [-1, 0, 0], 170, grains[3]);
-  const right = panel('sides', [18, 464, 464], [241, 250, 0], [1, 0, 0], 170, grains[1]);
+  // ---------- box ----------
+  const WY = WALL_T + WALL_H / 2;  // 254
+  const bottom = panel('bottom', [500, 12, 500], [0, 6, 0], [0, -1, 0], 130, grains[0]);
+  const front = panel('front', [500, WALL_H, 12], [0, WY, 244], [0, 0, 1], 170, grains[1]);
+  const back = panel('back', [500, WALL_H, 12], [0, WY, -244], [0, 0, -1], 170, grains[2]);
+  const left = panel('sides', [12, WALL_H, 476], [-244, WY, 0], [-1, 0, 0], 170, grains[3]);
+  const right = panel('sides', [12, WALL_H, 476], [244, WY, 0], [1, 0, 0], 170, grains[1]);
 
-  // lid on a pivot at the hinge axis: y = 482, z = -251 (just behind the back face)
-  const HZ = -251, HY = 482;
-  const lidPivot = new THREE.Group();
-  lidPivot.position.set(0, HY, HZ);
-  lidPivot.userData.home = lidPivot.position.clone();
-  lidPivot.userData.dir = new THREE.Vector3(0, 300, 0);
-  root.add(lidPivot);
-  explodables.push(lidPivot);
-  const lid = new THREE.Mesh(new THREE.BoxGeometry(500, 18, 500), plyMats([500, 18, 500], grains[3]));
-  lid.position.set(0, 9, 251);
-  lidPivot.add(lid);
-  reg(lid, 'lid');
-  walls.push(lid);
-
-  // feet
-  [[-215, -215], [215, -215], [-215, 215], [215, 215]].forEach(([x, z]) => reg(cylY(16, 10, M.rubber, x, -14, z, bottom), 'feet'));
-
-  // confirmat screw heads on front/back faces
+  [[-215, -215], [215, -215], [-215, 215], [215, 215]].forEach(([x, z]) => reg(cylY(16, 10, M.rubber, x, -11, z, bottom), 'feet'));
   [front, back].forEach((p) => {
-    const zf = p === front ? 9.4 : -9.4;
-    [-241, 241].forEach((x) => [-190, -70, 50, 170].forEach((y) => {
+    const zf = p === front ? 6.4 : -6.4;
+    [-244, 244].forEach((x) => [-190, -70, 50, 170].forEach((y) => {
       reg(cylZ(4.6, 0.8, M.darkSteel, x, y, zf, p, 16), 'screws');
       reg(cylZ(2.2, 1.0, M.plastic, x, y, zf * 1.01, p, 6), 'screws');
     }));
   });
 
-  // ---------- piano hinge ----------
-  {
-    const knuckles = new THREE.Group();
-    back.add(knuckles);
-    knuckles.position.set(0, HY - 250, HZ + 241);
-    for (let i = 0; i < 23; i++) cylX(3.3, 19.4, i % 2 ? M.steel : M.alu, -220 + i * 20, 0, 0, knuckles, 16);
-    reg(knuckles, 'hinge');
-    reg(bx(460, 22, 1.2, M.steel, 0, HY - 250 - 14.5, -9.6, back), 'hinge');
-    reg(bx(460, 16, 1.2, M.steel, 0, 9.5, 0.4, lidPivot), 'hinge');
+  // ---------- one side: lid half + hinge + gearbox + crank & links (left coords; right side mirrored) ----------
+  function buildSide(isRight) {
+    const wallPanel = isRight ? right : left;
+    // parts fixed to the side wall: they explode together with it
+    const onWall = new THREE.Group();
+    onWall.position.copy(wallPanel.userData.home).multiplyScalar(-1);
+    wallPanel.add(onWall);
+    const W = new THREE.Group(); if (isRight) W.scale.x = -1; onWall.add(W);
+    // lid half on its own pivot
+    const lidSide = new THREE.Group(); if (isRight) lidSide.scale.x = -1;
+    lidSide.userData.home = new THREE.Vector3(); lidSide.userData.dir = new THREE.Vector3(0, 300, 0);
+    root.add(lidSide); explodables.push(lidSide);
+    const pivot = new THREE.Group(); pivot.position.set(H.x, H.y, 0); lidSide.add(pivot);
+    const lidW = 249.5;
+    const lid = new THREE.Mesh(new THREE.BoxGeometry(lidW, LID_T, 500), plyMats([lidW, LID_T, 500], grains[isRight ? 1 : 3]));
+    lid.position.set(1.5 + lidW / 2, -5.5 + LID_T / 2, 0);
+    pivot.add(lid); reg(lid, 'lid'); walls.push(lid);
+    // piano hinge: knuckles on the corner, one leaf on the wall, one on top of the lid
+    const kn = new THREE.Group(); kn.position.set(H.x, H.y, 0); W.add(kn);
+    for (let i = 0; i < 25; i++) cylZ(2.4, 19.4, i % 2 ? M.steel : M.chrome, 0, 0, -240 + i * 20, kn, 14);
+    reg(kn, 'hinge');
+    reg(bx(1.2, 11, 480, M.steel, -250.6, TOP - 2.5, 0, W), 'hinge');
+    reg(bx(12, 1.2, 480, M.steel, 9, -0.9, 0, pivot), 'hinge');
+    [-200, -100, 0, 100, 200].forEach((z) => reg(cylY(2.6, 1.2, M.darkSteel, 9, -0.1, z, pivot, 12), 'hinge'));
+    // lid brackets (angle under the lid, pin at LID_A / PIN_Y), front and rear
+    const pinY = PIN_Y;
+    [Z.brkF, Z.brkR].forEach((z) => {
+      const g = new THREE.Group(); pivot.add(g);
+      bx(16, 2, 22, M.mbBlue, LID_A, -6.5, z - Math.sign(z) * 8, g);
+      bx(16, LID_C + 5, 2, M.mbBlue, LID_A, -5.5 - (LID_C + 5) / 2, z, g);
+      cylZ(2, 12, M.chrome, LID_A, pinY, z - Math.sign(z) * 3, g, 12);
+      reg(g, 'link');
+    });
+
+    // ---- gearbox (fixed to the wall) ----
+    const gb = new THREE.Group(); W.add(gb);
+    const pw = 84, ph = 122, pcx = -192, pcy = 415;
+    [Z.plateB, Z.plateF].forEach((z) => {
+      const p = bx(pw, ph, 3, M.acrylic, pcx, pcy, z, gb); p.userData.noShadow = true; p.renderOrder = 2;
+    });
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sy]) => cylZ(2.5, Z.plateF - Z.plateB, M.brass, pcx + sx * (pw / 2 - 5), pcy + sy * (ph / 2 - 5), (Z.plateF + Z.plateB) / 2, gb, 10));
+    bx(6, 70, 34, M.mbBlue, -235, 430, (Z.plateF + Z.plateB) / 2, gb);              // angle bracket to the side wall
+    cylZ(2, Z.plateF - Z.plateB + 2, M.chrome, T2.x, T2.y, (Z.plateF + Z.plateB) / 2, gb, 12);   // shaft 2
+    cylZ(2, Z.st2 - Z.plateB + 4, M.chrome, T3.x, T3.y, (Z.st2 + 2 + Z.plateB) / 2, gb, 12);     // shaft 3
+    const gMotor = gear(10, M.pinion, MO, Z.st1, gb);
+    const gT2b = gear(50, M.mbBlue, T2, Z.st1, gb);
+    const gT2s = gear(10, M.pinion, T2, Z.st2, gb);
+    const gT3b = gear(40, M.mbBlue, T3, Z.st2, gb);
+    const gT3s = gear(10, M.pinion, T3, Z.st3, gb);
+    const gSb = gear(50, M.mbBlue, S, Z.st3, gb);
+    reg(gb, 'gearbox');
+    // ---- motor 380 on the front plate, shaft through the plate ----
+    const mo = new THREE.Group(); W.add(mo);
+    cylZ(14, 35, M.can, MO.x, MO.y, Z.motorFace + 17.5, mo, 32);
+    cylZ(13.5, 4, M.white, MO.x, MO.y, Z.motorFace + 36.5, mo, 32);
+    [-5, 5].forEach((dx) => bx(2.5, 4, 3, M.brass, MO.x + dx, MO.y + 9, Z.motorFace + 39.5, mo));
+    cylZ(5, 3, M.steel, MO.x, MO.y, Z.motorFace - 0.5, mo, 16);
+    cylZ(1.2, Z.motorFace - Z.st1 + 2, M.chrome, MO.x, MO.y, (Z.motorFace + Z.st1) / 2, mo, 10);
+    reg(mo, 'motor');
+    // ---- output shaft, rear bearing, cranks ----
+    const sh = new THREE.Group(); W.add(sh);
+    cylZ(4, Z.crankF - Z.crankR + 3, M.chrome, S.x, S.y, (Z.crankF + Z.crankR) / 2, sh, 16);
+    bx(40, 40, 10, M.mbBlue, -218, S.y, Z.bearR, sh);
+    cylZ(7, 12, M.steel, S.x, S.y, Z.bearR, sh, 18);
+    const cranks = [Z.crankF, Z.crankR].map((z) => {
+      const c = new THREE.Group(); c.position.set(S.x, S.y, z); sh.add(c);
+      bx(CR + 10, 9, 3, M.mbBlue, CR / 2, 0, 0, c);
+      cylZ(6.5, 8, M.mbBlue, 0, 0, 0, c, 18);
+      cylZ(2, 10, M.chrome, CR, 0, Math.sign(z) * 3, c, 12);
+      return c;
+    });
+    reg(sh, 'crank');
+    // ---- links (the Makeblock "cuttable linkage"): rebuilt in pose each frame ----
+    const links = [Z.linkF, Z.linkR].map((z) => {
+      const L = new THREE.Group(); L.position.z = z; W.add(L);
+      bx(CL + 10, 8, 3, M.mbBlue, CL / 2, 0, 0, L);
+      for (let k = 0; k <= Math.floor(CL / 8); k++) cylZ(1.7, 3.4, M.plastic, k * 8, 0, 0, L, 10);
+      reg(L, 'link');
+      return L;
+    });
+    const gearsArr = { gMotor, gT2b, gT2s, gT3b, gT3s, gSb };
+    return { pivot, lid, cranks, links, gearsArr, W, lidSide };
+  }
+  const sideL = buildSide(false), sideR = buildSide(true);
+
+  // mesh phase constants (same for both sides, the right one is a mirror image)
+  const C1 = meshConst(MO, 10, T2, 50), C2 = meshConst(T2, 10, T3, 40), C3 = meshConst(T3, 10, S, 50);
+  function poseSide(sd, phi, theta) {
+    sd.pivot.rotation.z = theta;
+    sd.cranks.forEach((c) => { c.rotation.z = phi; });
+    const qx = S.x + CR * Math.cos(phi), qy = S.y + CR * Math.sin(phi);
+    const p = lidPin(theta), px = H.x + p.x, py = H.y + p.y;
+    const ang = Math.atan2(py - qy, px - qx);
+    sd.links.forEach((L) => { L.position.x = qx; L.position.y = qy; L.rotation.z = ang; });
+    // gears: motor turns -100·phi, each mesh reverses the direction
+    const aM = -RATIO * phi;
+    const aT2 = -(10 / 50) * aM + C1;
+    const aT3 = -(10 / 40) * aT2 + C2;
+    const aS = -(10 / 50) * aT3 + C3;
+    const g = sd.gearsArr;
+    g.gMotor.rotation.z = aM; g.gT2b.rotation.z = aT2; g.gT2s.rotation.z = aT2; g.gT3b.rotation.z = aT3; g.gT3s.rotation.z = aT3; g.gSb.rotation.z = aS;
   }
 
-  // ---------- actuator geometry ----------
-  // Lid bracket pivot in lid-pivot coords; base pivot in root coords.
-  const LID_P = new THREE.Vector3(202, -25, 115);
-  const BASE_P = new THREE.Vector3(202, HY - 285, HZ + 115); // (202, 197, -136)
-
-  // lid bracket (U clevis under the lid)
-  {
-    const g = new THREE.Group(); lidPivot.add(g); g.position.copy(LID_P);
-    bx(44, 3, 40, M.steel, 0, 23.5, 0, g);
-    bx(3, 24, 22, M.steel, -11, 10, 0, g);
-    bx(3, 24, 22, M.steel, 11, 10, 0, g);
-    cylX(3.5, 32, M.chrome, 0, 0, 0, g, 16);
-    reg(g, 'brackets');
-  }
-  // base bracket: wooden block on the right wall + U clevis on top
-  {
-    const g = new THREE.Group(); right.add(g);
-    g.position.set(BASE_P.x - 241, BASE_P.y - 250, BASE_P.z);
-    bx(60, 40, 60, M.pine, 0, -40, 0, g); // block 60 (out of wall) × 40 × 60
-    bx(44, 3, 40, M.steel, 0, -18.5, 0, g);
-    bx(3, 24, 22, M.steel, -11, -6, 0, g);
-    bx(3, 24, 22, M.steel, 11, -6, 0, g);
-    cylX(3.5, 32, M.chrome, 0, 0, 0, g, 16);
-    reg(g, 'brackets');
-  }
-
-  // actuator: local +y runs from the rear eye (base) to the rod eye (lid)
-  const act = new THREE.Group(); root.add(act);
-  const actInner = new THREE.Group(); act.add(actInner);
-  cylX(8.5, 14, M.plastic, 0, 0, 0, actInner);
-  bx(20, 50, 64, M.plastic, 0, 25, 16, actInner);           // gearbox
-  cylY(14, 186, M.alu, 0, 142, 0, actInner);                 // outer tube Ø28
-  cylY(15.5, 8, M.plastic, 0, 232, 0, actInner);             // tube cap
-  cylY(17, 80, M.darkSteel, 0, 89, 34, actInner);            // motor Ø34
-  cylY(17.5, 6, M.plastic, 0, 131, 34, actInner);            // motor end cap
-  const rod = cylY(10, 1, M.chrome, 0, 0, 0, actInner);      // stretched each frame
-  const rodEye = cylX(8.5, 14, M.plastic, 0, 0, 0, actInner);
-  const rodNeck = cylY(9.5, 12, M.plastic, 0, 0, 0, actInner);
-  reg(act, 'actuator');
-  const motorCable = new THREE.Vector3(0, 56, 50); // cable exit at the motor's lower end, actuator-local
-
-  // ---------- electronics (children of the bottom; bottom top face is local y = 9) ----------
-  const E = new THREE.Group(); bottom.add(E); E.position.y = -9; // E uses root coordinates
-  { const plate = bx(220, 6, 140, plyMats([220, 6, 140], grains[2]), -118, 21, -150, E); plate.castShadow = plate.receiveShadow = true; }
-  const PCB_Y = 29.8;
+  // ---------- electronics on the bottom (E uses root coordinates) ----------
+  const E = new THREE.Group(); bottom.add(E); E.position.y = -6;
+  { const plate = bx(160, 6, 110, plyMats([160, 6, 110], grains[2]), -140, 15, -165, E); plate.castShadow = plate.receiveShadow = true; }
+  const PCB_Y = 23.8;
   function standoffs(x, z, w, d, g) {
-    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => cylY(2, 5, M.brass, x + sx * (w / 2 - 3), 26.5, z + sz * (d / 2 - 3), g, 8));
+    [[-1, -1], [1, -1], [-1, 1], [1, 1]].forEach(([sx, sz]) => cylY(2, 5, M.brass, x + sx * (w / 2 - 3), 20.5, z + sz * (d / 2 - 3), g, 8));
   }
-  // Arduino Nano on a screw-terminal adapter
-  {
-    const g = new THREE.Group(); E.add(g);
-    bx(76, 1.6, 56, M.pcbBlue, -180, PCB_Y, -165, g);
-    standoffs(-180, -165, 76, 56, g);
-    [[-185, -165 - 23], [-185, -165 + 23]].forEach(([x, z]) => bx(66, 9, 8, M.termGreen, x + 5, PCB_Y + 5.3, z, g));
-    for (let i = 0; i < 2; i++) bx(38, 8.5, 2.6, M.plastic, -178, PCB_Y + 5, -165 + (i ? 7.6 : -7.6), g);
-    bx(43, 1.6, 18, M.pcbBlue, -178, PCB_Y + 10.2, -165, g);
-    bx(7, 1.4, 7, M.chip, -172, PCB_Y + 11.7, -165, g);
-    bx(4, 1.2, 4, M.chip, -186, PCB_Y + 11.6, -162, g);
-    bx(8, 4, 8, M.steel, -202, PCB_Y + 12.6, -165, g);   // USB
-    reg(g, 'arduino');
-  }
-  // 2-channel relay module
+  const BX = -145, BZ = -165;
+  const RELAY_X = [0, 1, 2, 3].map((i) => BX - 31.5 + i * 21);
+  const TERM_Z = BZ - 25;
   const relayLeds = [];
   {
     const g = new THREE.Group(); E.add(g);
-    bx(51, 1.6, 39, M.pcbBlue, -84, PCB_Y, -194, g);
-    standoffs(-84, -194, 51, 39, g);
-    [-94.5, -73.5].forEach((x, i) => {
-      bx(15.5, 15, 19, M.relayBlue, x, PCB_Y + 8.3, -192, g);
-      bx(15, 10, 8, M.termBlue, x, PCB_Y + 5.8, -209.5, g);
-      const led = bx(2.5, 1.5, 1.5, new THREE.MeshStandardMaterial({ color: 0x551111, emissive: 0x000000 }), x + 5, PCB_Y + 1.5, -178, g);
-      relayLeds.push(led);
+    bx(90, 1.6, 62, M.pcbGreen, BX, PCB_Y, BZ, g);
+    standoffs(BX, BZ, 90, 62, g);
+    RELAY_X.forEach((x) => {
+      bx(15.5, 15, 19, M.relayBlue, x, PCB_Y + 8.3, BZ - 6, g);
+      bx(15, 10, 8, M.termBlue, x, PCB_Y + 5.8, TERM_Z, g);
+      [-5, 0, 5].forEach((dx) => cylY(1.8, 0.8, M.steel, x + dx, PCB_Y + 11.2, TERM_Z, g, 10));
+      relayLeds.push(bx(3, 2, 2, new THREE.MeshStandardMaterial({ color: 0x551111, emissive: 0x000000 }), x, PCB_Y + 1.8, BZ + 9, g));
     });
-    bx(13, 8.5, 2.5, M.plastic, -84, PCB_Y + 5, -176.5, g);
-    reg(g, 'relay');
+    bx(8, 10, 10, M.termBlue, BX - 39, PCB_Y + 5.8, BZ + 22, g);
+    [-2.5, 2.5].forEach((dz) => cylY(1.8, 0.8, M.steel, BX - 39, PCB_Y + 11.2, BZ + 22 + dz, g, 10));
+    bx(10, 1.6, 6, M.chip, BX + 2, PCB_Y + 1.6, BZ + 20, g);
+    bx(5, 1.4, 5, M.chip, BX + 18, PCB_Y + 1.5, BZ + 12, g);
+    cylY(3, 8, M.plastic, BX - 22, PCB_Y + 4.8, BZ + 21, g, 16);
+    bx(6, 3.5, 6, M.plastic, BX + 22, PCB_Y + 2.6, BZ + 24, g);
+    {
+      const pts = [];
+      for (let i = 0; i <= 96; i++) { const a = (i / 96) * Math.PI * 16; pts.push(new THREE.Vector3(BX + 36 + Math.cos(a) * 2.6, PCB_Y + 2 + (i / 96) * 15, BZ + 20 + Math.sin(a) * 2.6)); }
+      mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 400, 0.35, 5, false), M.brass, 0, 0, 0, g);
+    }
+    reg(g, 'rfrelay');
   }
-  // LM2596 buck
+  // two 4 × AA holders in series
+  const BAT = [{ x: -175, z: -40 }, { x: -100, z: -40 }];
   {
     const g = new THREE.Group(); E.add(g);
-    bx(43, 1.6, 21, M.pcbBlue, -84, PCB_Y, -118, g);
-    standoffs(-84, -118, 43, 21, g);
-    cylY(6.5, 7, M.chip, -92, PCB_Y + 4.3, -118, g);
-    cylY(4, 10, M.plastic, -72, PCB_Y + 5.8, -123, g);
-    cylY(4, 10, M.plastic, -103, PCB_Y + 5.8, -113, g);
-    bx(9.5, 10, 4.5, M.relayBlue, -70, PCB_Y + 5.8, -111.5, g);
-    cylZ(1.3, 1.5, M.brass, -74, PCB_Y + 9, -109.2, g, 8);
-    bx(10, 4.5, 10, M.chip, -100, PCB_Y + 3, -122, g);
-    reg(g, 'buck');
-  }
-  // RXB6 receiver
-  {
-    const g = new THREE.Group(); E.add(g);
-    bx(30, 1.6, 14, M.pcbGreen, -32, PCB_Y, -204, g);
-    standoffs(-32, -204, 30, 14, g);
-    bx(8, 3, 5, M.steel, -38, PCB_Y + 2.3, -204, g);
-    bx(5, 1.5, 5, M.chip, -26, PCB_Y + 1.6, -202, g);
-    bx(2.5, 8, 10, M.plastic, -46, PCB_Y + 4.5, -204, g);
-    reg(g, 'rf');
+    const cellMat = new THREE.MeshStandardMaterial({ color: 0x2f7d4a, roughness: 0.35, metalness: 0.15 });
+    BAT.forEach((b) => {
+      bx(62, 10, 60, M.plastic, b.x, 17, b.z, g);
+      [-22, -7.3, 7.3, 22].forEach((dz) => {
+        cylX(7.2, 50, cellMat, b.x, 26, b.z + dz, g, 20);
+        cylX(2.6, 1.6, M.steel, b.x + 25.6, 26, b.z + dz, g, 12);
+      });
+      [-1, 1].forEach((s) => bx(2.5, 16, 60, M.plastic, b.x + s * 29.75, 22, b.z, g));
+    });
+    reg(g, 'battery');
   }
 
-  // ---------- limit switch on the inner front wall ----------
-  const lever = new THREE.Group();
-  {
-    const g = new THREE.Group(); front.add(g);
-    bx(20, 10, 6.4, M.plastic, -195, 223, -12.2, g);
-    bx(3, 3, 1, M.brass, -200, 216.5, -15.6, g);
-    lever.position.set(-204, 228.5, -12.2);
-    g.add(lever);
-    bx(20, 0.6, 4, M.steel, 10, 0, 0, lever);
-    cylZ(2.4, 3.2, M.plastic, 19.5, 2.2, 0, lever, 12);
-    reg(g, 'limit');
-  }
-
-  // ---------- back panel: jack, switch, button, LED (outer face = local z -9) ----------
-  let ledMat;
+  // ---------- back panel: switch (outer face = local z -6) ----------
   {
     const pw = new THREE.Group(); back.add(pw);
-    cylZ(9, 2.5, M.darkSteel, -175, -160, -10.3, pw);
-    cylZ(5.6, 7, M.steel, -175, -160, -14, pw);
-    cylZ(3, 0.6, M.chip, -175, -160, -17.6, pw, 16);
-    bx(21, 15, 3, M.plastic, -132, -160, -10.5, pw);
-    const rock = bx(16, 10, 3, M.red, -132, -160, -12.8, pw); rock.rotation.x = 0.18;
+    bx(21, 15, 3, M.plastic, -132, -164, -7.5, pw);
+    const rock = bx(16, 10, 3, M.red, -132, -164, -9.8, pw); rock.rotation.x = 0.18;
+    bx(19, 13, 16, M.plastic, -132, -164, 14, pw);
+    [-4, 4].forEach((dx) => bx(1.2, 6, 4, M.brass, -132 + dx, -164, 23.5, pw));
     reg(pw, 'power');
-    const pn = new THREE.Group(); back.add(pn);
-    cylZ(8.5, 2, M.steel, -88, -160, -10, pn);
-    cylZ(6, 5, M.plastic, -88, -160, -12.5, pn);
-    cylZ(5, 2, M.darkSteel, -56, -160, -10, pn);
-    ledMat = new THREE.MeshStandardMaterial({ color: 0x1d5a33, emissive: 0x000000, roughness: 0.2 });
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(3, 16, 12), ledMat); dome.position.set(-56, -160, -11.5); pn.add(dome);
-    reg(pn, 'panel');
-    ledMat = dome.material;
   }
 
   // ---------- keyfob on the floor ----------
   const fob = new THREE.Group();
   fob.position.set(400, 0, 430);
-  fob.rotation.y = -0.55;
+  fob.rotation.y = Math.PI - 0.55;
   scene.add(fob);
-  let fobBtn;
+  const fobButtons = [];
   {
     bx(32, 9, 58, M.plastic, 0, 4.5, 0, fob);
     bx(26, 1, 6, M.darkSteel, 0, 9.2, 22, fob);
-    fobBtn = cylY(5, 2.4, M.steel, -7, 10, -2, fob, 20);
-    cylY(5, 2.4, M.darkSteel, 7, 10, -2, fob, 20);
-    cylY(5, 2.4, M.darkSteel, -7, 10, -16, fob, 20);
-    cylY(5, 2.4, M.darkSteel, 7, 10, -16, fob, 20);
+    function letterTex(ch) {
+      const c = document.createElement('canvas'); c.width = c.height = 64;
+      const g = c.getContext('2d');
+      g.fillStyle = '#ffffff'; g.font = '700 44px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText(ch, 32, 35);
+      const t = new THREE.CanvasTexture(c); t.encoding = THREE.sRGBEncoding; return t;
+    }
+    [[7, -2, 'A'], [-7, -2, 'B'], [7, -16, 'C'], [-7, -16, 'D']].forEach(([x, z, ch], i) => {
+      const b = cylY(5, 2.4, M.darkSteel, x, 10, z, fob, 20);
+      const l = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.MeshBasicMaterial({ map: letterTex(ch), transparent: true, depthWrite: false }));
+      l.rotation.set(-Math.PI / 2, 0, Math.PI);
+      l.position.y = 1.25;
+      b.add(l);
+      b.userData.ch = i; l.userData.ch = i;
+      fobButtons.push(b);
+    });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(11, 1.4, 10, 32), M.steel);
     ring.rotation.x = Math.PI / 2; ring.position.set(0, 2, 40); fob.add(ring);
     reg(fob, 'remote');
@@ -1365,52 +1070,43 @@ void loop() {
   const wireGroup = new THREE.Group(); root.add(wireGroup);
   function wire(pts, color, r) {
     const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), false, 'centripetal');
-    const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(24, pts.length * 14), r || 1.1, 6, false), new THREE.MeshStandardMaterial({ color, roughness: 0.6 }));
+    const m = new THREE.Mesh(new THREE.TubeGeometry(curve, Math.max(30, pts.length * 16), r || 1.1, 6, false), new THREE.MeshStandardMaterial({ color, roughness: 0.6 }));
     wireGroup.add(m);
     reg(m, 'wires');
     return m;
   }
-  const PY = PCB_Y + 4;
-  wire([[-175, 90, -230], [-155, 96, -230], [-132, 90, -230]], WIRE.red, 1.6);
-  wire([[-132, 92, -230], [-128, 50, -227], [-118, 30, -150], [-104, PY, -120]], WIRE.red, 1.6);
-  wire([[-171, 86, -230], [-168, 44, -227], [-130, 28, -132], [-104, PY, -114]], WIRE.black, 1.6);
-  wire([[-104, PY, -122], [-112, 33, -160], [-96, PY + 2, -212]], WIRE.red, 1.4);
-  wire([[-64, PY, -114], [-60, 34, -150], [-73, PY + 2, -212]], WIRE.black, 1.4);
-  wire([[-62, PY, -122], [-120, 36, -140], [-160, PY + 6, -142]], WIRE.orange, 0.9);
-  wire([[-150, PY + 6, -188], [-120, 40, -176], [-100, PY + 4, -176]], WIRE.yellow, 0.8);
-  wire([[-148, PY + 6, -188], [-118, 42, -174], [-80, PY + 4, -176]], WIRE.green, 0.8);
-  wire([[-46, PY + 3, -204], [-90, 44, -150], [-150, PY + 6, -144]], WIRE.white, 0.8);
-  wire([[-18, PY, -204], [-18, 40, -226], [-18, 120, -229], [-18, 205, -229]], WIRE.blue, 0.7); // antenna 173 mm
-  wire([[-198, 468, 228], [-224, 462, 227], [-227, 260, 226], [-227, 34, 220], [-226, 30, 0], [-210, PY + 6, -138]], WIRE.yellow, 0.9);
-  wire([[-192, 468, 228], [-222, 458, 224], [-224, 250, 223], [-224, 34, 216], [-222, 30, 0], [-204, PY + 6, -138]], WIRE.black, 0.9);
-  wire([[-88, 90, -230], [-92, 50, -227], [-160, PY + 6, -192]], WIRE.green, 0.8);
-  wire([[-56, 90, -230], [-62, 50, -227], [-166, PY + 6, -193]], WIRE.white, 0.8);
-  // actuator cable is rebuilt when the actuator moves
-  const actCableMats = [new THREE.MeshStandardMaterial({ color: WIRE.red, roughness: 0.6 }), new THREE.MeshStandardMaterial({ color: WIRE.black, roughness: 0.6 })];
-  const actCables = actCableMats.map((mat) => { const m = new THREE.Mesh(new THREE.BufferGeometry(), mat); wireGroup.add(m); reg(m, 'wires'); return m; });
-  const tmpV = new THREE.Vector3();
-  function rebuildActCable() {
-    scene.updateMatrixWorld(true);
-    tmpV.copy(motorCable);
-    actInner.localToWorld(tmpV);
-    root.worldToLocal(tmpV);
-    [-2.2, 2.2].forEach((off, i) => {
-      const pts = [[-96 + off * 4, PY + 2, -214], [-30, 26, -224 + off], [150, 24, -224 + off], [218, 26, -205 + off], [226, 130, -196 + off], [226 + off, 222, -176], [tmpV.x + 16, tmpV.y - 6 + off, tmpV.z + 8], [tmpV.x, tmpV.y + off, tmpV.z]];
-      const curve = new THREE.CatmullRomCurve3(pts.map((p) => new THREE.Vector3(...p)), false, 'centripetal');
-      const m = actCables[i];
-      m.geometry.dispose();
-      m.geometry = new THREE.TubeGeometry(curve, 110, 1.7, 6, false);
-    });
-  }
+  const TY = PCB_Y + 5, TZ = TERM_Z - 5;
+  const NO = (i) => RELAY_X[i] - 5, COM = (i) => RELAY_X[i], NC = (i) => RELAY_X[i] + 5;
+  const PWR = { x: BX - 44, y: PCB_Y + 6, zp: BZ + 19.5, zn: BZ + 24.5 };
+  const B1 = BAT[0], B2 = BAT[1];
+  // series link: box 1 − → box 2 +
+  wire([[B1.x + 30, 20, B1.z + 26], [B1.x + 40, 18, B1.z + 34], [B2.x - 30, 20, B2.z + 26]], WIRE.black, 1.3);
+  // box 1 + → fuse → switch (back wall) → board +12 V
+  wire([[B1.x - 30, 20, B1.z - 26], [B1.x - 40, 19, -95], [-60, 19, -110], [-50, 20, -200], [-60, 46, -226], [-100, 58, -226], [-121, 58, -225], [-127, 72, -228], [-128, 86, -230]], WIRE.red, 1.6);
+  wire([[-136, 86, -230], [-142, 70, -229], [-144, 48, -226], [-206, 26, -212], [-210, 26, -150], [PWR.x, PWR.y, PWR.zp]], WIRE.red, 1.6);
+  // box 2 − → board GND
+  wire([[B2.x + 30, 20, B2.z - 26], [B2.x + 38, 18, -90], [-60, 18, -104], [-226, 19, -110], [-222, 22, -140], [PWR.x, PWR.y, PWR.zn]], WIRE.black, 1.6);
+  { const f = new THREE.Group(); wireGroup.add(f); cylX(5, 26, M.plastic, -100, 58, -226, f, 16); cylX(5.4, 3, M.darkSteel, -100, 58, -226, f, 16); reg(f, 'power'); }
+  // jumpers on the relay: +12 V → A NO → B NO, GND → A NC → B NC
+  wire([[PWR.x + 1, PWR.y, PWR.zp], [-198, 28, -170], [-196, 28, -204], [NO(0), TY, TZ]], WIRE.red, 1.3);
+  wire([[NO(0), TY, TZ], [NO(0) + 10, 31, TZ - 9], [NO(1), TY, TZ]], WIRE.red, 1.3);
+  wire([[PWR.x + 1, PWR.y, PWR.zn], [-203, 27, -168], [-200, 27, -210], [NC(0), TY, TZ]], WIRE.black, 1.3);
+  wire([[NC(0), TY, TZ], [NC(0) + 10, 33, TZ - 13], [NC(1), TY, TZ]], WIRE.black, 1.3);
+  // COM A / COM B → both motors (terminals at the motor's front end, near the front wall)
+  function motorTerm(side, k) { const x = MO.x + k * 5; return [side < 0 ? x : -x, MO.y + 9, Z.motorFace + 40.5]; }
+  [[0, -1, WIRE.red], [1, 1, WIRE.black]].forEach(([ch, k, col], i) => {
+    const off = i * 4;
+    const mL = motorTerm(-1, k), mR = motorTerm(1, k);
+    wire([[COM(ch), TY, TZ], [COM(ch) + 6, 22, -214], [-224 + off, 20, -150], [-226 + off, 20, 150], [-228 + off, 22, 228], [-231 + off, 200, 234], [-231 + off, 350, 235], [mL[0] - 14, mL[1] + 6, mL[2] + 1], mL], col, 1.2);
+    wire([[-228 + off, 22, 228], [-150, 18 + off, 230], [150, 18 + off, 230], [228 - off, 22, 228], [231 - off, 200, 234], [231 - off, 350, 235], [mR[0] + 14, mR[1] + 6, mR[2] + 1], mR], col, 1.2);
+  });
 
   // ---------- dimension lines ----------
-  let dimMat = new THREE.LineBasicMaterial({ color: 0x888888 });
+  dimMat = new THREE.LineBasicMaterial({ color: 0x888888 });
   const dims = new THREE.Group(); scene.add(dims);
   function dimLine(a, b, tickDir) {
-    const pts = [];
     const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), T = new THREE.Vector3(...tickDir);
-    pts.push(A, B, A.clone().add(T), A.clone().sub(T), B.clone().add(T), B.clone().sub(T));
-    const g = new THREE.BufferGeometry().setFromPoints(pts);
+    const g = new THREE.BufferGeometry().setFromPoints([A, B, A.clone().add(T), A.clone().sub(T), B.clone().add(T), B.clone().sub(T)]);
     dims.add(new THREE.LineSegments(g, dimMat));
   }
   dimLine([-250, 1, 300], [250, 1, 300], [0, 0, 14]);
@@ -1421,32 +1117,37 @@ void loop() {
   // ---------- labels ----------
   const labelsEl = $('#labels');
   const LABELS = [];
-  function addLabel(part, text, obj, offset, wood) {
+  function addLabel(part, text, obj, offset, cls, nearOnly) {
     const anchor = new THREE.Object3D();
     anchor.position.set(...offset);
     obj.add(anchor);
     const el = document.createElement('div');
-    el.className = 'lbl' + (wood ? ' wood' : '');
+    el.className = 'lbl' + (cls ? ' ' + cls : '');
     el.textContent = text;
-    el.addEventListener('click', () => select(selected === part ? null : part));
+    if (part) el.addEventListener('click', () => select(selected === part ? null : part));
     labelsEl.appendChild(el);
-    LABELS.push({ part, el, anchor, behind: false });
+    LABELS.push({ part, el, anchor, behind: false, near: !!nearOnly });
   }
   function addDimLabel(text, pos) {
     const anchor = new THREE.Object3D(); anchor.position.set(...pos); dims.add(anchor);
     const el = document.createElement('div'); el.className = 'lbl dim'; el.textContent = text; labelsEl.appendChild(el);
     LABELS.push({ part: null, el, anchor, dim: true });
   }
-  addLabel('lid', 'Крышка', lid, [0, 9, 252], true);
-  addLabel('hinge', 'Рояльная петля', back, [-150, 236, -9.5]);
-  addLabel('actuator', 'Актуатор 150 мм', actInner, [0, 175, -14]);
-  addLabel('brackets', 'Кронштейн', right, [BASE_P.x - 241, BASE_P.y - 250 - 40, BASE_P.z]);
-  addLabel('arduino', 'Arduino Nano', E, [-205, 46, -150]);
-  addLabel('relay', 'Реле', E, [-84, 52, -208]);
-  addLabel('rf', 'Приёмник 433', E, [-18, 205, -229]);
-  addLabel('limit', 'Концевик', front, [-195, 232, -12]);
-  addLabel('power', 'Гнездо, кнопка, LED', back, [-120, -146, -16]);
-  addLabel('remote', 'Брелок', fob, [0, 12, 0]);
+  addLabel('lid', 'Половина крышки', sideL.lid, [0, 2, 252], 'wood');
+  addLabel('hinge', 'Рояльная петля', sideL.W, [H.x, H.y + 2, 120]);
+  addLabel('gearbox', 'Редуктор 1:100', sideL.W, [-160, 360, 185]);
+  addLabel('motor', 'Мотор 380', sideL.W, [MO.x, MO.y + 16, Z.motorFace + 20]);
+  addLabel('crank', 'Ось и кривошипы', sideL.W, [S.x, S.y + 14, Z.crankR]);
+  addLabel('link', 'Тяга', sideL.links[0], [CL / 2, 6, 0]);
+  addLabel('rfrelay', 'Радиореле 4 канала', E, [BX, 50, BZ - 6]);
+  addLabel('battery', '8 × AA', E, [-137, 40, -40]);
+  addLabel('power', 'Выключатель', back, [-132, -150, -16]);
+  addLabel('remote', 'Брелок', fob, [0, 4, 54]);
+  // revolutions on each shaft, shown only up close
+  addLabel(null, 'мотор 800 об/мин', sideL.W, [MO.x + 8, MO.y - 10, Z.st1 + 3], 'rpm', true);
+  addLabel(null, '160 об/мин', sideL.W, [T2.x - 14, T2.y - 20, Z.st1 + 3], 'rpm', true);
+  addLabel(null, '40 об/мин', sideL.W, [T3.x + 12, T3.y + 6, Z.st2 + 3], 'rpm', true);
+  addLabel(null, '8 об/мин', sideL.W, [S.x - 6, S.y + 18, Z.st3 + 3], 'rpm', true);
   addDimLabel('500 мм', [0, 1, 322]);
   addDimLabel('500 мм', [322, 1, 0]);
   addDimLabel('500 мм', [342, 260, 312]);
@@ -1462,7 +1163,7 @@ void loop() {
     });
   }
   let hlId = null;
-  const INSIDE = ['actuator', 'brackets', 'arduino', 'relay', 'buck', 'rf', 'limit', 'wires'];
+  const INSIDE = ['gearbox', 'motor', 'crank', 'link', 'rfrelay', 'wires', 'battery'];
   on3dSelect = (id) => {
     if (id && INSIDE.indexOf(id) >= 0 && !xray) { $('#xray').checked = true; setXray(true); }
     if (hlId) setEmissive(hlId, false);
@@ -1478,7 +1179,7 @@ void loop() {
     xray = on;
     walls.forEach((w) => {
       (Array.isArray(w.material) ? w.material : [w.material]).forEach((m) => {
-        m.transparent = on; m.opacity = on ? (w === lid ? 0.28 : 0.16) : 1; m.depthWrite = !on; m.needsUpdate = true;
+        m.transparent = on; m.opacity = on ? (w.userData.part === 'lid' ? 0.3 : 0.16) : 1; m.depthWrite = !on; m.needsUpdate = true;
       });
       w.castShadow = !on;
     });
@@ -1486,52 +1187,15 @@ void loop() {
   $('#xray').addEventListener('change', (e) => setXray(e.target.checked));
   let explodeTarget = 0, explodeE = 0;
   $('#explode').addEventListener('change', (e) => { explodeTarget = e.target.checked ? 1 : 0; });
-  let labelsOn = true;
   const labelsBox = $('#labelsOn');
   if (window.matchMedia('(max-width: 640px)').matches) { labelsBox.checked = false; }
-  labelsOn = labelsBox.checked;
+  let labelsOn = labelsBox.checked;
   labelsBox.addEventListener('change', (e) => { labelsOn = e.target.checked; });
 
-  // ---------- kinematics ----------
-  function lidPoint(theta, out) {
-    const c = Math.cos(theta), s = Math.sin(theta);
-    // rotation.x = -theta applied to LID_P (y, z), then offset by the hinge
-    out.set(LID_P.x, HY + LID_P.y * c + LID_P.z * s, HZ - LID_P.y * s + LID_P.z * c);
-    return out;
-  }
-  const pv = new THREE.Vector3();
-  function lengthAt(theta) { return lidPoint(theta, pv).distanceTo(BASE_P); }
-  function thetaFor(L) {
-    let lo = 0, hi = 1.75;
-    for (let i = 0; i < 40; i++) { const mid = (lo + hi) / 2; if (lengthAt(mid) < L) lo = mid; else hi = mid; }
-    return (lo + hi) / 2;
-  }
-  const dirV = new THREE.Vector3(), lidV = new THREE.Vector3();
-  let lastCableKey = '';
-  function applyKinematics() {
-    const L = LMIN + sim.s;
-    sim.theta = thetaFor(L);
-    lidPivot.rotation.x = -sim.theta;
-    lidPoint(sim.theta, lidV);
-    dirV.subVectors(lidV, BASE_P);
-    const len = dirV.length();
-    actInner.rotation.x = Math.atan2(dirV.z, dirV.y);
-    const rodStart = 226, rodEnd = len - 12;
-    rod.scale.y = rodEnd - rodStart;
-    rod.position.y = (rodStart + rodEnd) / 2;
-    rodEye.position.y = len;
-    rodNeck.position.y = len - 10;
-    // limit-switch lever follows the lid underside, then gets pressed flat
-    const under = (HY + 480 * Math.sin(sim.theta)) - 250 - 2.4 - 228.5;
-    lever.rotation.z = Math.min(0.38, Math.asin(Math.max(-1, Math.min(1, under / 19.5))));
-    const key = sim.s.toFixed(1) + '|' + explodeE.toFixed(3);
-    if (key !== lastCableKey) { lastCableKey = key; rebuildActCable(); }
-  }
   function applyExplode(dt) {
     explodeE += (explodeTarget - explodeE) * Math.min(1, dt * 5);
     if (Math.abs(explodeTarget - explodeE) < 0.001) explodeE = explodeTarget;
     explodables.forEach((o) => o.position.copy(o.userData.home).addScaledVector(o.userData.dir, explodeE));
-    act.position.copy(BASE_P).addScaledVector(right.userData.dir, explodeE);
     wireGroup.visible = explodeE < 0.02;
     dims.visible = labelsOn && explodeE < 0.02;
   }
@@ -1540,6 +1204,7 @@ void loop() {
   const ray = new THREE.Raycaster();
   const ndc = new THREE.Vector2();
   let downXY = null;
+  function isVisible(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
   canvas.addEventListener('pointerdown', (e) => { downXY = [e.clientX, e.clientY]; });
   canvas.addEventListener('pointerup', (e) => {
     if (!downXY || Math.hypot(e.clientX - downXY[0], e.clientY - downXY[1]) > 6) return;
@@ -1551,16 +1216,31 @@ void loop() {
     const hit = ray.intersectObjects(targets, false).find((h) => h.object.parent && isVisible(h.object));
     if (!hit) { select(null); return; }
     const id = hit.object.userData.part;
-    if (id === 'remote') { press(); select('remote'); return; }
-    select(selected === id ? null : id);
+    select(id === 'remote' ? 'remote' : (selected === id ? null : id));
   });
-  function isVisible(o) { while (o) { if (!o.visible) return false; o = o.parent; } return true; }
+  let fobHeld = -1;
+  stage.addEventListener('pointerdown', (e) => {
+    if (e.target !== canvas || fobHeld >= 0) return;
+    const r = canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObjects(fobButtons, true)[0];
+    if (!hit) return;
+    fobHeld = hit.object.userData.ch;
+    controls.enabled = false;
+    pressDown(fobHeld);
+  }, true);
+  function endFobHold() { if (fobHeld < 0) return; pressUp(fobHeld); fobHeld = -1; controls.enabled = true; }
+  window.addEventListener('pointerup', endFobHold);
+  window.addEventListener('pointercancel', endFobHold);
 
   // ---------- camera presets ----------
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let camAnim = null;
   document.querySelectorAll('[data-view]').forEach((b) => b.addEventListener('click', () => {
-    const to = viewPose(b.dataset.view);
+    const name = b.dataset.view;
+    if (VIEWS[name].xray && !xray) { $('#xray').checked = true; setXray(true); }
+    const to = viewPose(name);
     if (reduceMotion) { camera.position.copy(to.p); controls.target.copy(to.t); return; }
     camAnim = { from: { p: camera.position.clone(), t: controls.target.clone() }, to, t0: performance.now(), dur: 850 };
   }));
@@ -1582,11 +1262,12 @@ void loop() {
     const occluders = xray ? [] : walls;
     LABELS.forEach((L) => {
       const show = labelsOn && (L.dim ? explodeE < 0.02 : isVisible(L.anchor.parent));
-      if (!show) L.behind = false;
-      if (!show) { L.el.hidden = true; return; }
+      if (!show) { L.behind = false; L.el.hidden = true; return; }
       L.anchor.getWorldPosition(wp);
       camDir.copy(wp).sub(camera.position);
       const dist = camDir.length();
+      if (L.near && (dist > 700 || explodeE > 0.02)) { L.el.hidden = true; return; }
+      if (!L.near && !L.dim && L.part !== 'remote' && dist < 400) { L.el.hidden = true; return; }
       const p = wp.clone().project(camera);
       if (p.z > 1 || p.x < -1.1 || p.x > 1.1 || p.y < -1.1 || p.y > 1.1) { L.el.hidden = true; return; }
       L.el.hidden = false;
@@ -1594,8 +1275,7 @@ void loop() {
       if (occl && !L.dim) {
         ray.set(camera.position, camDir.normalize());
         ray.far = dist - 4;
-        const hits = occluders.length ? ray.intersectObjects(occluders, false) : [];
-        L.behind = hits.length > 0;
+        L.behind = occluders.length ? ray.intersectObjects(occluders, false).length > 0 : false;
         ray.far = Infinity;
       }
       if (!L.dim && L.behind && !xray) L.el.hidden = true;
@@ -1617,31 +1297,23 @@ void loop() {
   new MutationObserver(applyTheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   // ---------- loop ----------
-  function ledIsOn(t) {
-    switch (sim.state) {
-      case 'CLOSED': return false;
-      case 'OPEN': return true;
-      case 'STOPPED': return Math.floor(t / 1000) % 2 === 0;
-      default: return Math.floor(t / 200) % 2 === 0;
-    }
-  }
   const hudLed = $('#hudLed'), hudNums = $('#hudNums');
   let last = performance.now(), lastNums = '';
   function frame(now) {
     const dt = Math.min(0.05, (now - last) / 1000); last = now;
-    const v = ROD_SPEED * sim.speed * dt;
-    if (sim.state === 'OPENING') { sim.s = Math.min(STROKE, sim.s + v); if (sim.s >= STROKE) { sim.state = 'OPEN'; updateUiState(); } }
-    else if (sim.state === 'CLOSING') { sim.s = Math.max(0, sim.s - v); if (sim.s <= 0) { sim.state = 'CLOSED'; updateUiState(); } }
+    const dir = motorDir();
+    const prevTheta = sim.theta;
+    if (dir) sim.phi += dir * OMEGA * sim.speed * dt;
+    sim.theta = thetaAt(sim.phi);
+    sim.dTheta = sim.theta - prevTheta;
+    if (stateNow() !== shownState) updateUiState();
     applyExplode(dt);
-    applyKinematics();
-    const on = ledIsOn(now);
-    ledMat.emissive.setHex(on ? 0x33ff88 : 0x000000);
-    ledMat.emissiveIntensity = on ? 1.6 : 1;
-    hudLed.classList.toggle('on', on);
-    relayLeds[0].material.emissive.setHex(sim.state === 'OPENING' ? 0xff2a2a : 0);
-    relayLeds[1].material.emissive.setHex(sim.state === 'CLOSING' ? 0xff2a2a : 0);
-    if (pressFx > 0) { pressFx -= dt; fobBtn.position.y = 9.2; } else fobBtn.position.y = 10;
-    const nums = Math.round(sim.theta * 180 / Math.PI) + '° · шток ' + Math.round(sim.s) + ' мм';
+    poseSide(sideL, sim.phi, sim.theta);
+    poseSide(sideR, sim.phi, sim.theta);
+    hudLed.classList.toggle('on', dir !== 0);
+    relayLeds.forEach((led, i) => led.material.emissive.setHex(sim.relays[i] ? 0xff2a2a : 0));
+    fobButtons.forEach((b, i) => { if (fobFx[i] > 0) fobFx[i] -= dt; b.position.y = (fobFx[i] > 0 || sim.held[i]) ? 9.2 : 10; });
+    const nums = Math.round(sim.theta / D2R) + '° · ' + (dir ? 'вал ' + (OUT_RPM * sim.speed).toLocaleString('ru-RU') + ' об/мин' : 'мотор стоит');
     if (nums !== lastNums) { hudNums.textContent = nums; lastNums = nums; }
     stepCam(now);
     controls.update();
@@ -1652,7 +1324,7 @@ void loop() {
   updateUiState();
   loadingEl.hidden = true;
   requestAnimationFrame(frame);
-  window.__cube = { sim, press, select, setXray };
+  window.__cube = { sim, pressDown, pressUp, select, setXray, stateNow, CR, CL, PHI_CLOSED, PHI_OPEN, OPEN_TIME, thetaAt };
 })();
 </script>
 
